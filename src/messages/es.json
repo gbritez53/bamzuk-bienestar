@@ -22,12 +22,16 @@
   },
   "checkout": {
     "title": "Checkout",
+    "billingDetails": "Datos de facturación",
     "name": "Nombre completo",
     "email": "Correo electrónico",
     "address": "Dirección",
     "city": "Ciudad",
     "postalCode": "Código postal",
     "country": "País",
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "total": "Total",
     "pay": "Pagar",
     "processing": "Procesando..."
   },

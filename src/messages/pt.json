@@ -22,12 +22,16 @@
   },
   "checkout": {
     "title": "Checkout",
+    "billingDetails": "Dados de faturação",
     "name": "Nome completo",
     "email": "E-mail",
     "address": "Morada",
     "city": "Cidade",
     "postalCode": "Código postal",
     "country": "País",
+    "subtotal": "Subtotal",
+    "shipping": "Envio",
+    "total": "Total",
     "pay": "Pagar",
     "processing": "A processar..."
   },
