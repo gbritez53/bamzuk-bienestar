@@ -1,0 +1,56 @@
+{
+  "navigation": {
+    "products": "Produtos",
+    "cart": "Carrinho"
+  },
+  "footer": {
+    "avisoLegal": "Aviso Legal",
+    "privacidad": "Privacidade",
+    "devoluciones": "Devoluções",
+    "cookies": "Cookies"
+  },
+  "home": {
+    "title": "Bem-vindo",
+    "subtitle": "Os melhores produtos ao seu alcance",
+    "cta": "Ver produtos"
+  },
+  "products": {
+    "title": "Catálogo",
+    "loading": "Carregando...",
+    "empty": "Não há produtos disponíveis",
+    "addToCart": "Adicionar ao carrinho",
+    "viewDetails": "Ver detalhes"
+  },
+  "cart": {
+    "title": "Seu carrinho",
+    "empty": "Seu carrinho está vazio",
+    "total": "Total",
+    "shipping": "Frete",
+    "freeShipping": "Frete grátis",
+    "checkout": "Finalizar compra",
+    "remove": "Remover",
+    "continueShopping": "Continuar comprando"
+  },
+  "checkout": {
+    "title": "Finalizar compra",
+    "name": "Nome completo",
+    "email": "Email",
+    "address": "Endereço",
+    "city": "Cidade",
+    "postalCode": "CEP / Código postal",
+    "country": "País",
+    "pay": "Pagar",
+    "processing": "Processando..."
+  },
+  "legal": {
+    "avisoLegal": "Aviso Legal",
+    "privacidad": "Política de Privacidade",
+    "devoluciones": "Política de Devoluções",
+    "cookies": "Política de Cookies"
+  },
+  "common": {
+    "back": "Voltar",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro"
+  }
+}

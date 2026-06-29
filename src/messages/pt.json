@@ -1,0 +1,61 @@
+{
+  "home": {
+    "title": "Bem-vindo à {storeName}",
+    "subtitle": "Descubra os melhores produtos com envio rápido para toda a Espanha e Portugal.",
+    "cta": "Ver produtos"
+  },
+  "products": {
+    "title": "Produtos",
+    "addToCart": "Adicionar ao carrinho",
+    "viewDetails": "Ver detalhes"
+  },
+  "cart": {
+    "title": "Carrinho",
+    "empty": "O seu carrinho está vazio",
+    "continueShopping": "Continuar a comprar",
+    "subtotal": "Subtotal",
+    "shipping": "Envio",
+    "freeShipping": "Grátis",
+    "total": "Total",
+    "checkout": "Finalizar compra",
+    "remove": "Remover"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "name": "Nome completo",
+    "email": "E-mail",
+    "address": "Morada",
+    "city": "Cidade",
+    "postalCode": "Código postal",
+    "country": "País",
+    "pay": "Pagar",
+    "processing": "A processar..."
+  },
+  "navigation": {
+    "products": "Produtos"
+  },
+  "footer": {
+    "avisoLegal": "Aviso Legal",
+    "privacidad": "Política de Privacidade",
+    "devoluciones": "Devoluções",
+    "cookies": "Política de Cookies"
+  },
+  "common": {
+    "error": "Ocorreu um erro",
+    "loading": "A carregar..."
+  },
+  "orders": {
+    "title": "Os meus pedidos",
+    "empty": "Ainda não tem pedidos",
+    "orderId": "Pedido",
+    "status": "Estado",
+    "date": "Data",
+    "total": "Total",
+    "pending": "Pendente",
+    "confirmed": "Confirmado",
+    "shipped": "Enviado",
+    "delivered": "Entregue",
+    "incident": "Incidente",
+    "cancelled": "Cancelado"
+  }
+}
