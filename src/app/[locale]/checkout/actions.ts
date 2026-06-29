@@ -7,6 +7,32 @@ import type { CartItem, Address } from '@/lib/contracts'
 
 const SUMUP_API = 'https://api.sumup.com'
 
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * Devuelve las credenciales de SumUp según el modo (sandbox o producción).
+ * Si SUMUP_SANDBOX=true, usa las claves con prefijo SUMUP_SANDBOX_.
+ * Si no, usa las claves normales SUMUP_API_KEY / SUMUP_MERCHANT_CODE.
+ */
+function getSumupCredentials(): { apiKey: string; merchantCode: string } {
+  const isSandbox = process.env.SUMUP_SANDBOX === 'true'
+
+  const apiKey = isSandbox
+    ? process.env.SUMUP_SANDBOX_API_KEY
+    : process.env.SUMUP_API_KEY
+
+  const merchantCode = isSandbox
+    ? process.env.SUMUP_SANDBOX_MERCHANT_CODE
+    : process.env.SUMUP_MERCHANT_CODE
+
+  if (!apiKey || !merchantCode) {
+    const mode = isSandbox ? 'sandbox' : 'production'
+    throw new Error(`SumUp ${mode} credentials not configured`)
+  }
+
+  return { apiKey, merchantCode }
+}
+
 // ── SumUp ─────────────────────────────────────────────────────────────────
 
 export interface CreateCheckoutInput {
@@ -19,9 +45,7 @@ export interface CreateCheckoutInput {
 export async function createSumUpCheckout(
   input: CreateCheckoutInput,
 ): Promise<{ checkoutId: string }> {
-  const apiKey = process.env.SUMUP_API_KEY
-  const merchantCode = process.env.SUMUP_MERCHANT_CODE
-  if (!apiKey || !merchantCode) throw new Error('SumUp credentials not configured')
+  const { apiKey, merchantCode } = getSumupCredentials()
 
   const res = await fetch(`${SUMUP_API}/v0.1/checkouts`, {
     method: 'POST',
@@ -51,8 +75,7 @@ export async function createSumUpCheckout(
 export async function verifySumUpPayment(
   checkoutId: string,
 ): Promise<{ status: string }> {
-  const apiKey = process.env.SUMUP_API_KEY
-  if (!apiKey) throw new Error('SUMUP_API_KEY not configured')
+  const { apiKey } = getSumupCredentials()
 
   const res = await fetch(`${SUMUP_API}/v0.1/checkouts/${checkoutId}`, {
     headers: { Authorization: `Bearer ${apiKey}` },
