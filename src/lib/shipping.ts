@@ -1,7 +1,10 @@
 export type ShippingService = 'servicio_24' | 'servicio_19' | 'servicio_14'
 
+export type ShippingZone = 'peninsula_es' | 'peninsula_pt'
+
 export interface ShippingRate {
   service: ShippingService
+  zone: ShippingZone
   costEur: number
   label: string // "Entrega en 24h", "Entrega en 19h", "Entrega en 14h"
 }
@@ -19,53 +22,112 @@ interface ServiceConfig {
   baseOver10: number
 }
 
-// Tabla de tarifas — EXACTAS del panel de Dropea (no modificar sin verificar)
-const RATES: Record<ShippingService, ServiceConfig> = {
-  servicio_24: {
-    label: 'Entrega en 24h',
-    tramos: [
-      { from: 0, to: 1, price: 3.68 },
-      { from: 1, to: 2, price: 3.94 },
-      { from: 2, to: 3, price: 4.20 },
-      { from: 3, to: 5, price: 4.73 },
-      { from: 5, to: 10, price: 6.20 },
-    ],
-    extraPerKg: 0.37,
-    baseOver10: 6.20,
+// Tabla de tarifas por zona — EXACTAS del panel de Dropea (no modificar sin verificar)
+const RATES: Record<ShippingZone, Record<ShippingService, ServiceConfig>> = {
+  peninsula_es: {
+    servicio_24: {
+      label: 'Entrega en 24h',
+      tramos: [
+        { from: 0, to: 1, price: 3.68 },
+        { from: 1, to: 2, price: 3.94 },
+        { from: 2, to: 3, price: 4.20 },
+        { from: 3, to: 5, price: 4.73 },
+        { from: 5, to: 10, price: 6.20 },
+      ],
+      extraPerKg: 0.37,
+      baseOver10: 6.20,
+    },
+    servicio_19: {
+      label: 'Entrega en 19h',
+      tramos: [
+        { from: 0, to: 3, price: 4.20 },
+        { from: 3, to: 5, price: 4.46 },
+        { from: 5, to: 10, price: 4.73 },
+      ],
+      extraPerKg: 0.42,
+      baseOver10: 4.73,
+    },
+    servicio_14: {
+      label: 'Entrega en 14h',
+      tramos: [
+        { from: 0, to: 1, price: 4.73 },
+        { from: 1, to: 2, price: 4.99 },
+        { from: 2, to: 3, price: 5.25 },
+        { from: 3, to: 5, price: 5.51 },
+        { from: 5, to: 10, price: 5.78 },
+      ],
+      extraPerKg: 0.53,
+      baseOver10: 5.78,
+    },
   },
-  servicio_19: {
-    label: 'Entrega en 19h',
-    tramos: [
-      { from: 0, to: 3, price: 4.20 },
-      { from: 3, to: 5, price: 4.46 },
-      { from: 5, to: 10, price: 4.73 },
-    ],
-    extraPerKg: 0.42,
-    baseOver10: 4.73,
-  },
-  servicio_14: {
-    label: 'Entrega en 14h',
-    tramos: [
-      { from: 0, to: 1, price: 4.73 },
-      { from: 1, to: 2, price: 4.99 },
-      { from: 2, to: 3, price: 5.25 },
-      { from: 3, to: 5, price: 5.51 },
-      { from: 5, to: 10, price: 5.78 },
-    ],
-    extraPerKg: 0.53,
-    baseOver10: 5.78,
+  peninsula_pt: {
+    servicio_24: {
+      label: 'Entrega em 24h',
+      tramos: [
+        { from: 0, to: 1, price: 5.10 },
+        { from: 1, to: 2, price: 5.45 },
+        { from: 2, to: 3, price: 5.80 },
+        { from: 3, to: 5, price: 6.50 },
+        { from: 5, to: 10, price: 8.50 },
+      ],
+      extraPerKg: 0.50,
+      baseOver10: 8.50,
+    },
+    servicio_19: {
+      label: 'Entrega em 19h',
+      tramos: [
+        { from: 0, to: 3, price: 5.80 },
+        { from: 3, to: 5, price: 6.15 },
+        { from: 5, to: 10, price: 6.50 },
+      ],
+      extraPerKg: 0.58,
+      baseOver10: 6.50,
+    },
+    servicio_14: {
+      label: 'Entrega em 14h',
+      tramos: [
+        { from: 0, to: 1, price: 6.50 },
+        { from: 1, to: 2, price: 6.85 },
+        { from: 2, to: 3, price: 7.20 },
+        { from: 3, to: 5, price: 7.55 },
+        { from: 5, to: 10, price: 7.90 },
+      ],
+      extraPerKg: 0.72,
+      baseOver10: 7.90,
+    },
   },
 }
 
 export const DEFAULT_SHIPPING_SERVICE: ShippingService = 'servicio_24'
+export const DEFAULT_SHIPPING_ZONE: ShippingZone = 'peninsula_es'
 
 // Tarifa plana cuando el producto no tiene peso registrado
-export const FALLBACK_RATE_EUR = 3.68
+export const FALLBACK_RATE_EUR: Record<ShippingZone, number> = {
+  peninsula_es: 3.68,
+  peninsula_pt: 5.10,
+}
 
 /**
- * Calcula el costo de envío según el peso total del carrito.
- * @param weightKg - peso total en kg. Si es 0, negativo o null → fallback €3.68
+ * Deriva la zona de envío desde el código de país.
+ */
+export function getZoneFromCountry(country: 'ES' | 'PT'): ShippingZone {
+  return country === 'PT' ? 'peninsula_pt' : 'peninsula_es'
+}
+
+/**
+ * Devuelve la etiqueta de zona para mostrar al usuario.
+ */
+export function getZoneLabel(zone: ShippingZone, locale: string): string {
+  return zone === 'peninsula_pt'
+    ? locale === 'pt' ? 'Portugal Continental' : 'Portugal peninsular'
+    : locale === 'pt' ? 'Espanha Continental' : 'España peninsular'
+}
+
+/**
+ * Calcula el costo de envío según el peso total del carrito y la zona.
+ * @param weightKg - peso total en kg. Si es 0, negativo o null → fallback según zona
  * @param service  - servicio de envío (default: servicio_24)
+ * @param zone     - zona de envío (default: peninsula_es)
  *
  * Rangos: el límite inferior es inclusivo, el superior es exclusivo (e.g. tramo 0–1kg
  * cubre [0, 1)). El límite de 10kg pertenece al último tramo, no al cálculo de exceso.
@@ -73,14 +135,17 @@ export const FALLBACK_RATE_EUR = 3.68
 export function calcularEnvio(
   weightKg: number | null,
   service: ShippingService = DEFAULT_SHIPPING_SERVICE,
+  zone: ShippingZone = DEFAULT_SHIPPING_ZONE,
 ): ShippingRate {
-  const config = RATES[service]
+  const zoneRates = RATES[zone]
+  const config = zoneRates[service]
 
   // Fallback cuando no hay peso válido
   if (!weightKg || weightKg <= 0) {
     return {
       service,
-      costEur: FALLBACK_RATE_EUR,
+      zone,
+      costEur: FALLBACK_RATE_EUR[zone],
       label: config.label,
     }
   }
@@ -89,7 +154,7 @@ export function calcularEnvio(
   if (weightKg > 10) {
     const extraKg = weightKg - 10
     const cost = Math.round((config.baseOver10 + extraKg * config.extraPerKg) * 100) / 100
-    return { service, costEur: cost, label: config.label }
+    return { service, zone, costEur: cost, label: config.label }
   }
 
   // Buscar tramo: límite inferior inclusivo (>=), límite superior exclusivo (<).
@@ -99,7 +164,7 @@ export function calcularEnvio(
     tramos.find(t => weightKg >= t.from && weightKg < t.to) ??
     tramos[tramos.length - 1]!
 
-  return { service, costEur: tramo.price, label: config.label }
+  return { service, zone, costEur: tramo.price, label: config.label }
 }
 
 /**

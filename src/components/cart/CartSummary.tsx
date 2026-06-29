@@ -7,12 +7,14 @@ interface CartSummaryProps {
   shippingEur: number
   isFreeShipping: boolean
   locale: string
+  zoneLabel?: string
 }
 
 export default function CartSummary({
   shippingEur,
   isFreeShipping,
   locale,
+  zoneLabel,
 }: CartSummaryProps) {
   const subtotalCents = useCartStore(s => s.subtotalCents)
   const t = useTranslations('cart')
@@ -27,14 +29,21 @@ export default function CartSummary({
 
   return (
     <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-      <h2 className="mb-5 text-lg font-semibold text-foreground">Resumen</h2>
+      <h2 className="mb-5 text-lg font-semibold text-foreground">
+        {locale === 'pt' ? 'Resumo' : 'Resumen'}
+      </h2>
       <dl className="space-y-3">
         <div className="flex justify-between text-sm">
           <dt className="text-muted-foreground">{t('subtotal')}</dt>
           <dd className="font-medium text-foreground">{fmt(subtotalEur)}</dd>
         </div>
         <div className="flex justify-between text-sm">
-          <dt className="text-muted-foreground">{t('shipping')}</dt>
+          <dt className="text-muted-foreground">
+            {t('shipping')}
+            {zoneLabel && (
+              <span className="ml-1 text-xs">({zoneLabel})</span>
+            )}
+          </dt>
           <dd
             className={
               isFreeShipping ? 'font-medium text-success' : 'font-medium text-foreground'

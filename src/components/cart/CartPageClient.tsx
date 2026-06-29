@@ -1,10 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCartStore } from '@/hooks/useCart'
 import CartSummary from './CartSummary'
-import { calcularEnvio, calcularPesoEfectivo, esEnvioGratis, DEFAULT_SHIPPING_SERVICE } from '@/lib/shipping'
+import {
+  calcularEnvio,
+  calcularPesoEfectivo,
+  esEnvioGratis,
+  getZoneFromCountry,
+  getZoneLabel,
+  DEFAULT_SHIPPING_SERVICE,
+  type ShippingZone,
+} from '@/lib/shipping'
 import { useTranslations } from 'next-intl'
 
 interface CartPageClientProps {
@@ -18,16 +27,23 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
   const subtotalCents = useCartStore(s => s.subtotalCents)
   const t = useTranslations('cart')
 
+  const [selectedCountry, setSelectedCountry] = useState<'ES' | 'PT'>(
+    locale === 'pt' ? 'PT' : 'ES',
+  )
+
+  const zone: ShippingZone = getZoneFromCountry(selectedCountry)
   const subtotalEur = subtotalCents / 100
   const freeShipping = esEnvioGratis(subtotalEur)
   const effectiveWeightKg = calcularPesoEfectivo(items)
-  const shippingRate = calcularEnvio(effectiveWeightKg, DEFAULT_SHIPPING_SERVICE)
+  const shippingRate = calcularEnvio(effectiveWeightKg, DEFAULT_SHIPPING_SERVICE, zone)
 
   const fmt = (eur: number) =>
     eur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
       style: 'currency',
       currency: 'EUR',
     })
+
+  const zoneLabel = getZoneLabel(zone, locale)
 
   if (items.length === 0) {
     return (
@@ -110,10 +126,42 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
       </div>
 
       <div className="space-y-4">
+        {/* Country selector */}
+        <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+          <label className="block text-xs font-medium text-muted-foreground mb-2">
+            {locale === 'pt' ? 'País de entrega' : 'País de entrega'}
+          </label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedCountry('ES')}
+              className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+                selectedCountry === 'ES'
+                  ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                  : 'border-border bg-card text-foreground hover:border-primary/50'
+              }`}
+            >
+              🇪🇸 España
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedCountry('PT')}
+              className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+                selectedCountry === 'PT'
+                  ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                  : 'border-border bg-card text-foreground hover:border-primary/50'
+              }`}
+            >
+              🇵🇹 Portugal
+            </button>
+          </div>
+        </div>
+
         <CartSummary
           shippingEur={shippingRate.costEur}
           isFreeShipping={freeShipping}
           locale={locale}
+          zoneLabel={zoneLabel}
         />
         <Link
           href={`/${locale}/checkout`}
