@@ -29,7 +29,12 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
         <p className="text-2xl font-semibold text-gray-900">{price}</p>
-        <p className="text-sm text-gray-600">{product.description}</p>
+        {product.description && (
+          <div
+            className="prose prose-sm max-w-none text-gray-600 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-gray-900 [&_strong]:font-semibold"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          />
+        )}
         {product.variants.length > 0 && (
           <div>
             <p className="mb-2 text-sm font-medium text-gray-700">
