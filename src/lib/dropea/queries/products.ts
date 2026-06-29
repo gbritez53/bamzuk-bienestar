@@ -37,7 +37,7 @@ export const LIST_PRODUCTS_QUERY = gql`
 `
 
 export const GET_PRODUCT_BY_ID_QUERY = gql`
-  query GetProductById($id: Int!) {
+  query GetProductById($id: [Int]!) {
     products(id: $id, limit: 1) {
       data {
         id

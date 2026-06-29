@@ -31,7 +31,7 @@ export async function getProductById(id: number): Promise<Product | null> {
   const client = getDropeaClient()
   const data = await client.request<{ products: { data: DropeaRawProductPagination['data'] } }>(
     GET_PRODUCT_BY_ID_QUERY,
-    { id },
+    { id: [id] },
   )
   const raw = data.products.data[0]
   return raw ? mapDropeaProduct(raw) : null
