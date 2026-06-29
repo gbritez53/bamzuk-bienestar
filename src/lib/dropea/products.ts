@@ -8,6 +8,8 @@ import { LIST_PRODUCTS_QUERY, GET_PRODUCT_BY_ID_QUERY } from './queries/products
 import { mapDropeaProduct } from './mappers'
 import type { Product, ProductPage, DropeaRawProductPagination } from './types'
 
+const MAX_FETCH_PER_PAGE = 250
+
 export async function listProducts(
   page = 1,
   limit = 40,
@@ -19,27 +21,40 @@ export async function listProducts(
   if (sort) variables.sort = sort
 
   if (category) {
-    // Filtrado en memoria: traemos más productos y filtramos por categoría
-    // Nota: con 4028 productos totales, traemos hasta 100 para mantener performance
-    const fetchLimit = Math.max(limit, 100)
-    const data = await client.request<{ products: DropeaRawProductPagination }>(
-      LIST_PRODUCTS_QUERY,
-      { page: 1, limit: fetchLimit, ...(sort ? { sort } : {}) },
-    )
+    // Filtrar por categoría en memoria: recorremos páginas hasta encontrar suficientes
+    const allProducts: Product[] = []
+    let currentPage = 1
+    let lastPage = 1
 
-    const allMapped = data.products.data.map(mapDropeaProduct).filter(p => p.isPublic)
-    const filtered = allMapped.filter(
-      p => p.category.toLowerCase() === category.toLowerCase(),
-    )
-    const totalFiltered = filtered.length
-    const lastPage = Math.ceil(totalFiltered / limit)
+    while (currentPage <= lastPage) {
+      const data = await client.request<{ products: DropeaRawProductPagination }>(
+        LIST_PRODUCTS_QUERY,
+        { page: currentPage, limit: MAX_FETCH_PER_PAGE, ...(sort ? { sort } : {}) },
+      )
+
+      const mapped = data.products.data.map(mapDropeaProduct).filter(p => p.isPublic)
+      const filtered = mapped.filter(
+        p => p.category.toLowerCase() === category.toLowerCase(),
+      )
+      allProducts.push(...filtered)
+
+      lastPage = data.products.last_page
+      currentPage++
+
+      // Safety: no recorrer más de 20 páginas (5000 productos)
+      if (currentPage > 20) break
+    }
+
+    // Aplicar paginación sobre el resultado filtrado
+    const totalFiltered = allProducts.length
+    const totalLastPage = Math.ceil(totalFiltered / limit)
     const start = (page - 1) * limit
 
     return {
-      items: filtered.slice(start, start + limit),
+      items: allProducts.slice(start, start + limit),
       total: totalFiltered,
       currentPage: page,
-      lastPage,
+      lastPage: totalLastPage,
       perPage: limit,
     }
   }
