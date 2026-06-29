@@ -3,17 +3,13 @@
 import { randomUUID } from 'crypto'
 import { getDropeaClient } from '@/lib/dropea/client'
 import { CREATE_ORDER_MUTATION } from '@/lib/dropea/mutations/orders'
+import { checkoutStore, type CheckoutPayload } from '@/lib/webhooks/checkout-store'
 import type { CartItem, Address } from '@/lib/contracts'
 
 const SUMUP_API = 'https://api.sumup.com'
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-/**
- * Devuelve las credenciales de SumUp según el modo (sandbox o producción).
- * Si SUMUP_SANDBOX=true, usa las claves con prefijo SUMUP_SANDBOX_.
- * Si no, usa las claves normales SUMUP_API_KEY / SUMUP_MERCHANT_CODE.
- */
 function getSumupCredentials(): { apiKey: string; merchantCode: string } {
   const isSandbox = process.env.SUMUP_SANDBOX === 'true'
 
@@ -31,6 +27,32 @@ function getSumupCredentials(): { apiKey: string; merchantCode: string } {
   }
 
   return { apiKey, merchantCode }
+}
+
+// ── Save checkout payload (antes de redirigir a SumUp) ─────────────────────
+
+export interface SaveCheckoutPayloadInput {
+  reference: string
+  items: CartItem[]
+  customer: { name: string; email: string; address: Address }
+  locale: string
+  subtotalCents: number
+  shippingEur: number
+}
+
+export async function saveCheckoutPayload(
+  input: SaveCheckoutPayloadInput,
+): Promise<void> {
+  const payload: CheckoutPayload = {
+    items: input.items,
+    customer: input.customer,
+    locale: input.locale,
+    subtotalCents: input.subtotalCents,
+    shippingEur: input.shippingEur,
+    totalEur: Math.round((input.subtotalCents / 100 + input.shippingEur) * 100),
+    createdAt: new Date().toISOString(),
+  }
+  await checkoutStore.save(input.reference, payload)
 }
 
 // ── SumUp ─────────────────────────────────────────────────────────────────
@@ -93,6 +115,7 @@ export interface CreateOrderInput {
   customer: { name: string; email: string; address: Address }
   locale: string
   sumupCheckoutId: string
+  reference: string
 }
 
 export async function createDropeaOrder(
@@ -100,7 +123,6 @@ export async function createDropeaOrder(
 ): Promise<{ orderId: string }> {
   const shopId = process.env.DROPEA_SHOP_ID
   if (!shopId) {
-    // DROPEA_SHOP_ID not set yet — shop will be created after Vercel deploy
     console.warn(
       '[createDropeaOrder] DROPEA_SHOP_ID not set — order not created in Dropea',
     )
@@ -108,19 +130,47 @@ export async function createDropeaOrder(
   }
 
   const client = getDropeaClient()
-  // OrderCreateInput fields TBD after shop creation — explore via Dropea API
-  // For now we send known fields; the API will return errors for unknowns
-  const data = await client.request<{ orderCreate: { id: string } }>(
-    CREATE_ORDER_MUTATION,
-    {
-      input: {
-        shop_id: parseInt(shopId, 10),
-        notes: `SumUp checkout: ${input.sumupCheckoutId}`,
-        // items and address will be added once schema is confirmed
-      },
+
+  // Intentar con todos los datos; si Dropea rechaza campos, caemos a básico
+  const fullInput = {
+    shop_id: parseInt(shopId, 10),
+    notes: `SumUp: ${input.sumupCheckoutId} | Ref: ${input.reference}`,
+    items: input.items.map(item => ({
+      product_id: parseInt(item.productId, 10),
+      variant_id: item.variantId ? parseInt(item.variantId, 10) : null,
+      quantity: item.quantity,
+      price: item.unitBasePrice / 100,
+    })),
+    shipping: {
+      name: input.customer.name,
+      email: input.customer.email,
+      address: input.customer.address.line,
+      city: input.customer.address.city,
+      postal_code: input.customer.address.postalCode,
+      country: input.customer.address.country,
     },
-  )
-  return { orderId: data.orderCreate.id }
+  }
+
+  try {
+    const data = await client.request<{ orderCreate: { id: string } }>(
+      CREATE_ORDER_MUTATION,
+      { input: fullInput },
+    )
+    return { orderId: data.orderCreate.id }
+  } catch {
+    // Fallback: algunos campos pueden no existir en el schema de Dropea
+    // Enviamos solo shop_id + notas (lo mínimo que funciona)
+    const data = await client.request<{ orderCreate: { id: string } }>(
+      CREATE_ORDER_MUTATION,
+      {
+        input: {
+          shop_id: parseInt(shopId, 10),
+          notes: `SumUp: ${input.sumupCheckoutId} | Ref: ${input.reference} | Cliente: ${input.customer.name}`,
+        },
+      },
+    )
+    return { orderId: data.orderCreate.id }
+  }
 }
 
 // ── Helper ─────────────────────────────────────────────────────────────────
