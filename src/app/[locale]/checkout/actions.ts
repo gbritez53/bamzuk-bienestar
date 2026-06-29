@@ -102,6 +102,6 @@ export async function createDropeaOrder(
 
 // ── Helper ─────────────────────────────────────────────────────────────────
 
-export function generateOrderReference(): string {
+export async function generateOrderReference(): Promise<string> {
   return `ORDER-${randomUUID().slice(0, 8).toUpperCase()}`
 }

@@ -25,7 +25,7 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
     startTransition(async () => {
       try {
         setError(null)
-        const reference = generateOrderReference()
+        const reference = await generateOrderReference()
         const amountEur = subtotalCents / 100
         const siteUrl =
           process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
