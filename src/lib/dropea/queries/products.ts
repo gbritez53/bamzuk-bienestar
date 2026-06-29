@@ -1,12 +1,12 @@
 // src/lib/dropea/queries/products.ts
 // Queries con campos REALES confirmados via exploración — 2026-06-29
-// No usar product(id) — no existe. Filtrar con products(id: Int)
+// Nota: si categories no está soportado por la API, se filtra en memoria
 
 import { gql } from 'graphql-request'
 
 export const LIST_PRODUCTS_QUERY = gql`
-  query ListProducts($page: Int, $limit: Int, $sort: ProductSortEnum) {
-    products(page: $page, limit: $limit, sort: $sort) {
+  query ListProducts($page: Int, $limit: Int, $sort: ProductSortEnum, $categories: [String]) {
+    products(page: $page, limit: $limit, sort: $sort, categories: $categories) {
       data {
         id
         name

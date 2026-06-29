@@ -9,6 +9,11 @@ export const nichoConfig = {
     accent: '#F0FDF4',
   },
   font: 'Inter',
+  // Categoría del nicho para filtrar productos desde la API de Dropea.
+  // Si se setea, SOLO se muestran productos de esta categoría.
+  // Dejalo vacío ('') para mostrar todos los productos.
+  // Ej: 'Electrónica', 'Hogar', 'Juguetes', etc.
+  category: process.env['NICHO_CATEGORY'] ?? 'Electrónica',
 } as const
 
 export type NichoConfig = typeof nichoConfig

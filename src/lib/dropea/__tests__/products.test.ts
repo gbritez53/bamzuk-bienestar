@@ -61,7 +61,7 @@ describe('listProducts', () => {
     expect(result.items).toHaveLength(1)
   })
 
-  it('acepta page y limit', async () => {
+  it('acepta page, limit y category', async () => {
     mockRequest.mockResolvedValue({
       products: {
         data: [],
@@ -76,7 +76,25 @@ describe('listProducts', () => {
     expect(mockRequest).toHaveBeenCalledWith(expect.anything(), {
       page: 2,
       limit: 10,
-      sort: undefined,
+    })
+  })
+
+  it('pasa categories cuando se filtra por categoría', async () => {
+    mockRequest.mockResolvedValue({
+      products: {
+        data: [],
+        total: 0,
+        current_page: 1,
+        last_page: 1,
+        per_page: 40,
+      },
+    })
+    const { listProducts } = await import('@/lib/dropea/products')
+    await listProducts(1, 40, undefined, 'Electrónica')
+    expect(mockRequest).toHaveBeenCalledWith(expect.anything(), {
+      page: 1,
+      limit: 40,
+      categories: ['Electrónica'],
     })
   })
 })
