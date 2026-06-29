@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import AddToCartButton from '@/components/catalog/AddToCartButton'
 import { Separator } from '@/components/ui/separator'
+import { calcularPesoEfectivo, calcularEnvio } from '@/lib/shipping'
 import type { Product } from '@/lib/dropea/types'
 
 interface ProductDetailProps {
@@ -15,14 +15,30 @@ interface ProductDetailProps {
 export default function ProductDetail({ product, locale }: ProductDetailProps) {
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
   const image = product.images[0]
-  const price = product.pvpr.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
-    style: 'currency',
-    currency: 'EUR',
-  })
-  const costPrice = product.costPrice.toLocaleString(
-    locale === 'pt' ? 'pt-PT' : 'es-ES',
-    { style: 'currency', currency: 'EUR' },
-  )
+
+  const fmt = (eur: number) =>
+    eur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
+      style: 'currency',
+      currency: 'EUR',
+    })
+
+  const price = fmt(product.pvpr)
+  const costPrice = fmt(product.costPrice)
+
+  // Cálculo de envío para 1 unidad de este producto
+  const shippingInfo = useMemo(() => {
+    const effectiveWeight = calcularPesoEfectivo([
+      {
+        weightKg: product.weightKg,
+        dimensions: product.dimensions
+          ? { lengthCm: product.dimensions.length, widthCm: product.dimensions.width, heightCm: product.dimensions.height }
+          : null,
+        quantity: 1,
+      },
+    ])
+    if (effectiveWeight == null) return null
+    return calcularEnvio(effectiveWeight)
+  }, [product])
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
@@ -68,6 +84,31 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
           <span className="text-3xl font-bold text-primary">{price}</span>
           <span className="text-sm text-muted-foreground line-through">{costPrice}</span>
         </div>
+
+        {/* Shipping estimate */}
+        {shippingInfo && (
+          <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3.5 py-2.5 text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="h-4 w-4 flex-shrink-0 text-primary"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+            </svg>
+            <span>
+              {locale === 'pt' ? 'Frete' : 'Envío'}:{' '}
+              <span className="font-semibold text-foreground">
+                {fmt(shippingInfo.costEur)}
+              </span>
+              <span className="ml-1 text-muted-foreground">
+                ({shippingInfo.label})
+              </span>
+            </span>
+          </div>
+        )}
 
         <Separator />
 
