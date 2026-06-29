@@ -10,7 +10,10 @@ vi.mock('next/link', () => ({
 }))
 
 vi.mock('next/image', () => ({
-  default: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />
+  ),
 }))
 
 const product: Product = {
@@ -39,10 +42,10 @@ describe('ProductCard', () => {
     expect(screen.getByText(/32[,.]98/)).toBeInTheDocument()
   })
 
-  it('link apunta a /productos/60', () => {
+  it('link apunta a /es/productos/60', () => {
     render(<ProductCard product={product} locale="es" />)
     const link = screen.getByRole('link')
-    expect(link).toHaveAttribute('href', expect.stringContaining('/productos/60'))
+    expect(link).toHaveAttribute('href', '/es/productos/60')
   })
 
   it('muestra la imagen con alt del nombre del producto', () => {
@@ -51,9 +54,11 @@ describe('ProductCard', () => {
     expect(img).toHaveAttribute('alt', 'Almohada Cervical')
   })
 
-  it('muestra placeholder cuando no hay imagen', () => {
+  it('muestra icono placeholder cuando no hay imagen', () => {
     render(<ProductCard product={{ ...product, images: [] }} locale="es" />)
-    const img = screen.getByRole('img')
-    expect(img).toHaveAttribute('alt', 'Sin imagen')
+    // Should render an SVG icon instead of img
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    // The card still renders with the product info
+    expect(screen.getByText('Almohada Cervical')).toBeInTheDocument()
   })
 })

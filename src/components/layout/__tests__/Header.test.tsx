@@ -40,20 +40,20 @@ beforeEach(() => {
 describe('Header', () => {
   it('renders and shows the site name', () => {
     render(<Header />)
-    // nichoConfig.name defaults to 'Mi Tienda' when NEXT_PUBLIC_SITE_NAME is not set
     expect(screen.getByText('Mi Tienda')).toBeInTheDocument()
   })
 
-  it('has a link to the products page', () => {
+  it('has a link to the products page with locale prefix', () => {
     render(<Header />)
-    const productsLink = screen.getByRole('link', { name: /products/i })
-    expect(productsLink).toHaveAttribute('href', '/es/productos')
+    const link = screen.getByRole('link', { name: /products/i })
+    expect(link).toHaveAttribute('href', '/es/productos')
   })
 
   it('has a cart button that opens the drawer', () => {
     render(<Header />)
-    const cartButton = screen.getByRole('button', { name: /abrir carrito/i })
-    expect(cartButton).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /abrir carrito/i }),
+    ).toBeInTheDocument()
   })
 
   it('shows 0 cart items in the badge by default', () => {

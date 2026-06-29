@@ -4,9 +4,9 @@ export const nichoConfig = {
   logo: '/logo.svg',
   locale: (process.env['NEXT_PUBLIC_LOCALE'] ?? 'es') as 'es' | 'pt',
   colors: {
-    primary: '#000000',
-    secondary: '#1D3557',
-    accent: '#f5f5f5',
+    primary: '#7C3AED',
+    secondary: '#0EA5E9',
+    accent: '#F0FDF4',
   },
   font: 'Inter',
 } as const

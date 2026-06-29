@@ -9,7 +9,11 @@ interface CartSummaryProps {
   locale: string
 }
 
-export default function CartSummary({ shippingEur, isFreeShipping, locale }: CartSummaryProps) {
+export default function CartSummary({
+  shippingEur,
+  isFreeShipping,
+  locale,
+}: CartSummaryProps) {
   const subtotalCents = useCartStore(s => s.subtotalCents)
   const t = useTranslations('cart')
   const fmt = (eur: number) =>
@@ -22,22 +26,26 @@ export default function CartSummary({ shippingEur, isFreeShipping, locale }: Car
   const totalEur = subtotalEur + (isFreeShipping ? 0 : shippingEur)
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6">
-      <h2 className="mb-4 text-lg font-semibold text-gray-900">Resumen</h2>
-      <dl className="space-y-2">
+    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <h2 className="mb-5 text-lg font-semibold text-foreground">Resumen</h2>
+      <dl className="space-y-3">
         <div className="flex justify-between text-sm">
-          <dt className="text-gray-600">{t('total')}</dt>
-          <dd className="font-medium">{fmt(subtotalEur)}</dd>
+          <dt className="text-muted-foreground">{t('subtotal')}</dt>
+          <dd className="font-medium text-foreground">{fmt(subtotalEur)}</dd>
         </div>
         <div className="flex justify-between text-sm">
-          <dt className="text-gray-600">{t('shipping')}</dt>
-          <dd className={isFreeShipping ? 'font-medium text-green-600' : 'font-medium'}>
+          <dt className="text-muted-foreground">{t('shipping')}</dt>
+          <dd
+            className={
+              isFreeShipping ? 'font-medium text-success' : 'font-medium text-foreground'
+            }
+          >
             {isFreeShipping ? t('freeShipping') : fmt(shippingEur)}
           </dd>
         </div>
-        <div className="mt-4 flex justify-between border-t border-gray-200 pt-4 text-base font-semibold">
-          <dt>{t('total')}</dt>
-          <dd>{fmt(totalEur)}</dd>
+        <div className="border-t border-border pt-3 flex justify-between text-base font-semibold">
+          <dt className="text-foreground">{t('total')}</dt>
+          <dd className="text-primary">{fmt(totalEur)}</dd>
         </div>
       </dl>
     </div>

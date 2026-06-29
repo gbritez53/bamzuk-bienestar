@@ -9,8 +9,8 @@ export function Badge({ children, className = '', ...props }: BadgeProps) {
     <span
       className={[
         'inline-flex items-center justify-center min-w-5 h-5 px-1.5',
-        'text-xs font-semibold rounded-full',
-        'bg-black text-white',
+        'text-[10px] font-bold leading-none rounded-full',
+        'bg-primary text-primary-foreground',
         className,
       ]
         .filter(Boolean)

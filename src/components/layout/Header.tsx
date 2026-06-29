@@ -18,28 +18,32 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white">
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-white/80 backdrop-blur-lg">
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Logo / site name */}
-          <Link href={`/${locale}`} className="text-lg font-bold tracking-tight text-gray-900">
+          {/* Logo */}
+          <Link
+            href={`/${locale}`}
+            className="text-lg font-bold tracking-tight"
+            style={{ color: nichoConfig.colors.primary }}
+          >
             {nichoConfig.name}
           </Link>
 
-          {/* Main navigation */}
-          <div className="hidden gap-6 sm:flex">
+          {/* Nav links */}
+          <div className="hidden items-center gap-8 sm:flex">
             <Link
               href={`/${locale}/productos`}
-              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {t('products')}
             </Link>
           </div>
 
-          {/* Cart */}
+          {/* Cart button */}
           <button
             onClick={() => setDrawerOpen(true)}
             aria-label="Abrir carrito"
-            className="relative flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-gray-900"
+            className="relative flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-sm font-medium text-muted-foreground shadow-sm transition-all hover:border-primary/30 hover:text-foreground hover:shadow-md"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +51,7 @@ export default function Header() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="h-5 w-5"
+              className="h-4 w-4"
               aria-hidden="true"
             >
               <path

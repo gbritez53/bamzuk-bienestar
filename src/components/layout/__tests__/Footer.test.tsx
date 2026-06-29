@@ -6,6 +6,10 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }))
 
+vi.mock('next/navigation', () => ({
+  useParams: () => ({ locale: 'es' }),
+}))
+
 vi.mock('next/link', () => ({
   default: ({
     href,
@@ -23,39 +27,40 @@ vi.mock('next/link', () => ({
 }))
 
 describe('Footer', () => {
-  it('renders and shows the site name', () => {
-    render(<Footer />)
-    // nichoConfig.name defaults to 'Mi Tienda'
-    expect(screen.getByText(/Mi Tienda/)).toBeInTheDocument()
-  })
-
-  it('has a link to /aviso-legal', () => {
-    render(<Footer />)
-    const link = screen.getByRole('link', { name: 'avisoLegal' })
-    expect(link).toHaveAttribute('href', '/aviso-legal')
-  })
-
-  it('has a link to /privacidad', () => {
-    render(<Footer />)
-    const link = screen.getByRole('link', { name: 'privacidad' })
-    expect(link).toHaveAttribute('href', '/privacidad')
-  })
-
-  it('has a link to /devoluciones', () => {
-    render(<Footer />)
-    const link = screen.getByRole('link', { name: 'devoluciones' })
-    expect(link).toHaveAttribute('href', '/devoluciones')
-  })
-
-  it('has a link to /cookies', () => {
-    render(<Footer />)
-    const link = screen.getByRole('link', { name: 'cookies' })
-    expect(link).toHaveAttribute('href', '/cookies')
-  })
-
   it('shows the current year', () => {
     render(<Footer />)
-    const currentYear = new Date().getFullYear().toString()
-    expect(screen.getByText(new RegExp(currentYear))).toBeInTheDocument()
+    // Year is inside © 2026 Mi Tienda — use a function matcher
+    expect(
+      screen.getByText((content) => content.includes(new Date().getFullYear().toString())),
+    ).toBeInTheDocument()
+  })
+
+  it('shows the site name', () => {
+    render(<Footer />)
+    expect(screen.getByText('Mi Tienda')).toBeInTheDocument()
+  })
+
+  it('has a link to /es/aviso-legal', () => {
+    render(<Footer />)
+    const link = screen.getByText('avisoLegal').closest('a')
+    expect(link).toHaveAttribute('href', '/es/aviso-legal')
+  })
+
+  it('has a link to /es/privacidad', () => {
+    render(<Footer />)
+    const link = screen.getByText('privacidad').closest('a')
+    expect(link).toHaveAttribute('href', '/es/privacidad')
+  })
+
+  it('has a link to /es/devoluciones', () => {
+    render(<Footer />)
+    const link = screen.getByText('devoluciones').closest('a')
+    expect(link).toHaveAttribute('href', '/es/devoluciones')
+  })
+
+  it('has a link to /es/cookies', () => {
+    render(<Footer />)
+    const link = screen.getByText('cookies').closest('a')
+    expect(link).toHaveAttribute('href', '/es/cookies')
   })
 })

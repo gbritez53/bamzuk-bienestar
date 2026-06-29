@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 const nichoStyle = `
   :root {
     --primary: ${nichoConfig.colors.primary};
+    --secondary: ${nichoConfig.colors.secondary};
     --accent: ${nichoConfig.colors.accent};
   }
 `
@@ -39,7 +40,7 @@ export default function RootLayout({
         {/* eslint-disable-next-line react/no-danger */}
         <style dangerouslySetInnerHTML={{ __html: nichoStyle }} />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
       </body>
     </html>

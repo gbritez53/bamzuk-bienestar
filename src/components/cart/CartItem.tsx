@@ -19,9 +19,9 @@ export default function CartItem({ item, locale }: CartItemProps) {
   )
 
   return (
-    <div className="flex gap-4 rounded-lg border border-gray-200 bg-white p-4">
-      {item.imageUrl && (
-        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-50">
+    <div className="flex gap-4 rounded-xl border border-border bg-card p-3 shadow-sm">
+      {item.imageUrl ? (
+        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
           <Image
             src={item.imageUrl}
             alt={item.name}
@@ -30,33 +30,48 @@ export default function CartItem({ item, locale }: CartItemProps) {
             sizes="80px"
           />
         </div>
+      ) : (
+        <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-muted">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1}
+            stroke="currentColor"
+            className="h-8 w-8 text-muted-foreground/30"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.41a2.25 2.25 0 0 1 3.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" />
+          </svg>
+        </div>
       )}
-      <div className="flex flex-1 flex-col gap-2">
-        <p className="text-sm font-medium text-gray-900">{item.name}</p>
-        <p className="text-sm text-gray-500">{price}</p>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-1 flex-col gap-1.5">
+        <p className="text-sm font-medium text-foreground">{item.name}</p>
+        <p className="text-sm font-semibold text-primary">{price}</p>
+        <div className="mt-auto flex items-center gap-2">
           <button
             onClick={() =>
               updateQuantity(item.productId, item.variantId, item.quantity - 1)
             }
-            className="h-7 w-7 rounded border text-sm hover:bg-gray-50"
+            className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Disminuir cantidad"
           >
             −
           </button>
-          <span className="text-sm">{item.quantity}</span>
+          <span className="min-w-[1.5rem] text-center text-sm font-medium text-foreground">
+            {item.quantity}
+          </span>
           <button
             onClick={() =>
               updateQuantity(item.productId, item.variantId, item.quantity + 1)
             }
-            className="h-7 w-7 rounded border text-sm hover:bg-gray-50"
+            className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Aumentar cantidad"
           >
             +
           </button>
           <button
             onClick={() => removeItem(item.productId, item.variantId)}
-            className="ml-auto text-xs text-red-500 hover:text-red-700"
+            className="ml-auto text-xs font-medium text-destructive transition-colors hover:text-red-700"
             aria-label="Eliminar"
           >
             Eliminar

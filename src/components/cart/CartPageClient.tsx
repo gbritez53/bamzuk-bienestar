@@ -20,8 +20,6 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
 
   const subtotalEur = subtotalCents / 100
   const freeShipping = esEnvioGratis(subtotalEur)
-
-  // Compute total weight handling null weightKg per item
   const totalWeightKg = items.reduce(
     (sum, item) => sum + (item.weightKg ?? 0) * item.quantity,
     0,
@@ -31,13 +29,33 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
     DEFAULT_SHIPPING_SERVICE,
   )
 
+  const fmt = (eur: number) =>
+    eur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
+      style: 'currency',
+      currency: 'EUR',
+    })
+
   if (items.length === 0) {
     return (
-      <div className="py-16 text-center">
-        <p className="mb-4 text-gray-500">{t('empty')}</p>
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1}
+          stroke="currentColor"
+          className="mb-4 h-16 w-16 text-muted-foreground/20"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+          />
+        </svg>
+        <p className="mb-2 text-lg font-medium text-foreground">{t('empty')}</p>
         <Link
           href={`/${locale}/productos`}
-          className="text-sm font-medium text-gray-900 underline"
+          className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
         >
           {t('continueShopping')}
         </Link>
@@ -47,15 +65,14 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-3">
-      {/* Items */}
       <div className="space-y-4 lg:col-span-2">
         {items.map(item => (
           <div
             key={`${item.productId}-${item.variantId ?? ''}`}
-            className="flex gap-4 rounded-lg border border-gray-200 bg-white p-4"
+            className="flex gap-4 rounded-xl border border-border bg-card p-4 shadow-sm"
           >
             {item.imageUrl && (
-              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-50">
+              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                 <Image
                   src={item.imageUrl}
                   alt={item.name}
@@ -66,30 +83,29 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
               </div>
             )}
             <div className="flex flex-1 flex-col gap-2">
-              <p className="text-sm font-medium text-gray-900">{item.name}</p>
-              <p className="text-sm text-gray-500">
-                {(item.unitBasePrice / 100).toLocaleString(
-                  locale === 'pt' ? 'pt-PT' : 'es-ES',
-                  { style: 'currency', currency: 'EUR' },
-                )}
-              </p>
+              <p className="text-sm font-medium text-foreground">{item.name}</p>
+              <p className="text-sm font-semibold text-primary">{fmt(item.unitBasePrice / 100)}</p>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => updateQuantity(item.productId, item.variantId, item.quantity - 1)}
-                  className="h-7 w-7 rounded border text-sm hover:bg-gray-50"
+                  onClick={() =>
+                    updateQuantity(item.productId, item.variantId, item.quantity - 1)
+                  }
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   −
                 </button>
-                <span className="text-sm">{item.quantity}</span>
+                <span className="text-sm font-medium text-foreground">{item.quantity}</span>
                 <button
-                  onClick={() => updateQuantity(item.productId, item.variantId, item.quantity + 1)}
-                  className="h-7 w-7 rounded border text-sm hover:bg-gray-50"
+                  onClick={() =>
+                    updateQuantity(item.productId, item.variantId, item.quantity + 1)
+                  }
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   +
                 </button>
                 <button
                   onClick={() => removeItem(item.productId, item.variantId)}
-                  className="ml-auto text-xs text-red-500 hover:text-red-700"
+                  className="ml-auto text-xs font-medium text-destructive hover:text-red-700"
                 >
                   {t('remove')}
                 </button>
@@ -99,7 +115,6 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
         ))}
       </div>
 
-      {/* Summary */}
       <div className="space-y-4">
         <CartSummary
           shippingEur={shippingRate.costEur}
@@ -108,7 +123,7 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
         />
         <Link
           href={`/${locale}/checkout`}
-          className="block w-full rounded-lg bg-gray-900 px-6 py-3 text-center text-sm font-medium text-white hover:bg-gray-700"
+          className="flex w-full items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:shadow-xl"
         >
           {t('checkout')}
         </Link>
