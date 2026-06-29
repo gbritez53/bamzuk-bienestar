@@ -103,13 +103,62 @@ export function calcularEnvio(
 }
 
 /**
- * Calcula el peso total de un carrito.
+ * Calcula el peso total real de un carrito.
  * @param items - array de items con weightKg y quantity
  */
 export function calcularPesoTotal(
   items: Array<{ weightKg: number; quantity: number }>,
 ): number {
   return items.reduce((acc, item) => acc + item.weightKg * item.quantity, 0)
+}
+
+interface ItemWithDimensions {
+  weightKg: number | null
+  dimensions: { lengthCm: number; widthCm: number; heightCm: number } | null
+  quantity: number
+}
+
+/**
+ * Calcula el peso volumétrico de un item individual.
+ * Fórmula Dropea: (Largo × Ancho × Alto) / 6000
+ * El resultado está en kg. Usa dimensiones en cm.
+ */
+export function calcularPesoVolumetrico(
+  dimensions: { lengthCm: number; widthCm: number; heightCm: number },
+): number {
+  return (dimensions.lengthCm * dimensions.widthCm * dimensions.heightCm) / 6000
+}
+
+/**
+ * Calcula el peso efectivo para envío: el MAYOR entre peso real y peso volumétrico.
+ * Si ningún item tiene dimensiones, cae a peso real.
+ * Si ningún item tiene peso real, devuelve null (fallback a tarifa plana).
+ *
+ * @returns peso efectivo en kg, o null si no hay datos suficientes
+ */
+export function calcularPesoEfectivo(items: ItemWithDimensions[]): number | null {
+  let totalReal = 0
+  let totalVolumetrico = 0
+  let hasWeight = false
+  let hasDimensions = false
+
+  for (const item of items) {
+    if (item.weightKg != null) {
+      totalReal += item.weightKg * item.quantity
+      hasWeight = true
+    }
+    if (item.dimensions) {
+      const vol = calcularPesoVolumetrico(item.dimensions) * item.quantity
+      totalVolumetrico += vol
+      hasDimensions = true
+    }
+  }
+
+  if (!hasWeight) return null
+
+  if (!hasDimensions) return totalReal
+
+  return Math.max(totalReal, totalVolumetrico)
 }
 
 /**

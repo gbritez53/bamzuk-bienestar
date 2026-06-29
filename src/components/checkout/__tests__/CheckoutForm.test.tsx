@@ -16,6 +16,7 @@ vi.mock('@/hooks/useCart', () => ({
           unitBasePrice: 3298,
           quantity: 1,
           weightKg: 1,
+          dimensions: null,
           imageUrl: null,
           variantId: null,
         },

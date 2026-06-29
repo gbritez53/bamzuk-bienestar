@@ -20,6 +20,13 @@ export default function AddToCartButton({ product, variantId }: AddToCartButtonP
       name: product.name,
       unitBasePrice: Math.round(product.pvpr * 100),
       weightKg: product.weightKg,
+      dimensions: product.dimensions
+        ? {
+            lengthCm: product.dimensions.length,
+            widthCm: product.dimensions.width,
+            heightCm: product.dimensions.height,
+          }
+        : null,
       imageUrl: product.images[0]?.url ?? null,
       quantity: 1,
     })

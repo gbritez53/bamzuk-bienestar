@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import AddToCartButton from '@/components/catalog/AddToCartButton'
@@ -10,6 +13,7 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ product, locale }: ProductDetailProps) {
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
   const image = product.images[0]
   const price = product.pvpr.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
     style: 'currency',
@@ -74,21 +78,32 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
           />
         )}
 
-        {/* Variants */}
+        {/* Variants — selectable chips */}
         {product.variants.length > 0 && (
           <>
             <Separator />
             <div>
               <p className="mb-2.5 text-sm font-medium text-foreground">Variantes</p>
               <div className="flex flex-wrap gap-2">
-                {product.variants.map(v => (
-                  <span
-                    key={v.id}
-                    className="rounded-lg border border-border bg-card px-3.5 py-1.5 text-sm text-foreground shadow-sm transition-all hover:border-primary/50 hover:bg-primary-light hover:text-primary"
-                  >
-                    {v.name}
-                  </span>
-                ))}
+                {product.variants.map(v => {
+                  const isSelected = selectedVariantId === v.id
+                  return (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() =>
+                        setSelectedVariantId(isSelected ? null : v.id)
+                      }
+                      className={`rounded-lg border px-3.5 py-1.5 text-sm font-medium shadow-sm transition-all ${
+                        isSelected
+                          ? 'border-primary bg-primary text-primary-foreground shadow-primary/25'
+                          : 'border-border bg-card text-foreground hover:border-primary/50 hover:bg-primary-light hover:text-primary'
+                      }`}
+                    >
+                      {v.name}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </>
@@ -96,7 +111,7 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
 
         <Separator />
 
-        <AddToCartButton product={product} />
+        <AddToCartButton product={product} variantId={selectedVariantId ?? undefined} />
       </div>
     </div>
   )

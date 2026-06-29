@@ -9,12 +9,19 @@ export type OrderStatus =
   | 'incident'
   | 'cancelled'
 
+export interface CartItemDimensions {
+  lengthCm: number
+  widthCm: number
+  heightCm: number
+}
+
 export interface CartItem {
   productId: string
   variantId: string | null
   name: string
   unitBasePrice: number // céntimos, SIN IVA
   weightKg: number | null
+  dimensions: CartItemDimensions | null
   imageUrl: string | null
   quantity: number // >= 1
 }

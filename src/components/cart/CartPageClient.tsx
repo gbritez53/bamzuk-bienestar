@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCartStore } from '@/hooks/useCart'
 import CartSummary from './CartSummary'
-import { calcularEnvio, esEnvioGratis, DEFAULT_SHIPPING_SERVICE } from '@/lib/shipping'
+import { calcularEnvio, calcularPesoEfectivo, esEnvioGratis, DEFAULT_SHIPPING_SERVICE } from '@/lib/shipping'
 import { useTranslations } from 'next-intl'
 
 interface CartPageClientProps {
@@ -20,14 +20,8 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
 
   const subtotalEur = subtotalCents / 100
   const freeShipping = esEnvioGratis(subtotalEur)
-  const totalWeightKg = items.reduce(
-    (sum, item) => sum + (item.weightKg ?? 0) * item.quantity,
-    0,
-  )
-  const shippingRate = calcularEnvio(
-    totalWeightKg > 0 ? totalWeightKg : null,
-    DEFAULT_SHIPPING_SERVICE,
-  )
+  const effectiveWeightKg = calcularPesoEfectivo(items)
+  const shippingRate = calcularEnvio(effectiveWeightKg, DEFAULT_SHIPPING_SERVICE)
 
   const fmt = (eur: number) =>
     eur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {

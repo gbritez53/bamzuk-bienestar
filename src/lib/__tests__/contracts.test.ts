@@ -1,6 +1,7 @@
 import { describe, it, expectTypeOf } from 'vitest'
 import type {
   CartItem,
+  CartItemDimensions,
   ShippingCalculation,
   Address,
   CheckoutPayload,
@@ -24,6 +25,14 @@ describe('contracts — type-level tests (Design Decisión 4)', () => {
 
     it('weightKg acepta null (fallback shipping)', () => {
       expectTypeOf<CartItem['weightKg']>().toEqualTypeOf<number | null>()
+    })
+
+    it('dimensions acepta null o CartItemDimensions', () => {
+      expectTypeOf<CartItem['dimensions']>().toEqualTypeOf<{
+        lengthCm: number
+        widthCm: number
+        heightCm: number
+      } | null>()
     })
 
     it('imageUrl acepta null', () => {

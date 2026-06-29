@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   calcularEnvio,
   calcularPesoTotal,
+  calcularPesoVolumetrico,
+  calcularPesoEfectivo,
   esEnvioGratis,
   FALLBACK_RATE_EUR,
   DEFAULT_SHIPPING_SERVICE,
@@ -157,6 +159,92 @@ describe('calcularPesoTotal', () => {
 
   it('array vacío → 0', () => {
     expect(calcularPesoTotal([])).toBe(0)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────────
+// calcularPesoVolumetrico
+// ────────────────────────────────────────────────────────────────────────────────
+
+describe('calcularPesoVolumetrico', () => {
+  it('30cm × 20cm × 15cm → 1.5 kg (9000/6000)', () => {
+    expect(calcularPesoVolumetrico({ lengthCm: 30, widthCm: 20, heightCm: 15 })).toBe(1.5)
+  })
+
+  it('60cm × 40cm × 30cm → 12 kg (72000/6000)', () => {
+    expect(calcularPesoVolumetrico({ lengthCm: 60, widthCm: 40, heightCm: 30 })).toBe(12)
+  })
+
+  it('caja pequeña 10×10×10 → 0.167 kg (1000/6000)', () => {
+    const result = calcularPesoVolumetrico({ lengthCm: 10, widthCm: 10, heightCm: 10 })
+    expect(result).toBeCloseTo(0.167, 3)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────────
+// calcularPesoEfectivo
+// ────────────────────────────────────────────────────────────────────────────────
+
+describe('calcularPesoEfectivo', () => {
+  it('usa peso real cuando no hay dimensiones', () => {
+    const items = [
+      { weightKg: 2, dimensions: null, quantity: 1 },
+      { weightKg: 3, dimensions: null, quantity: 2 },
+    ]
+    expect(calcularPesoEfectivo(items)).toBe(8) // 2 + 3*2
+  })
+
+  it('usa peso volumétrico cuando es mayor que real', () => {
+    // Item liviano pero grande: 1kg real, caja 60×40×30cm = 12kg vol
+    const items = [
+      { weightKg: 1, dimensions: { lengthCm: 60, widthCm: 40, heightCm: 30 }, quantity: 1 },
+    ]
+    expect(calcularPesoEfectivo(items)).toBe(12) // max(1, 12)
+  })
+
+  it('usa peso real cuando es mayor que volumétrico', () => {
+    // Item pesado pero compacto: 50kg real, caja 10×10×10 = 0.167 vol
+    const items = [
+      { weightKg: 50, dimensions: { lengthCm: 10, widthCm: 10, heightCm: 10 }, quantity: 1 },
+    ]
+    expect(calcularPesoEfectivo(items)).toBe(50) // max(50, 0.167)
+  })
+
+  it('multiplica por quantity correctamente', () => {
+    // 2 items de 1kg real cada uno, caja 30×20×15 = 1.5kg vol cada uno
+    const items = [
+      { weightKg: 1, dimensions: { lengthCm: 30, widthCm: 20, heightCm: 15 }, quantity: 3 },
+    ]
+    // Real: 1*3 = 3, Vol: 1.5*3 = 4.5
+    expect(calcularPesoEfectivo(items)).toBe(4.5)
+  })
+
+  it('mezcla items con y sin dimensiones', () => {
+    const items = [
+      { weightKg: 2, dimensions: null, quantity: 1 },                                        // real: 2
+      { weightKg: 1, dimensions: { lengthCm: 60, widthCm: 40, heightCm: 30 }, quantity: 2 }, // real: 2, vol: 24
+    ]
+    // Real total: 2 + 2 = 4, Vol total: 0 + 24 = 24
+    expect(calcularPesoEfectivo(items)).toBe(24)
+  })
+
+  it('devuelve null si ningún item tiene peso', () => {
+    const items = [
+      { weightKg: null, dimensions: null, quantity: 1 },
+    ]
+    expect(calcularPesoEfectivo(items)).toBeNull()
+  })
+
+  it('usa peso real si hay dimensiones pero no weightKg', () => {
+    // Si no hay peso real pero hay dimensiones, las dimensiones no cuentan sin peso real
+    const items = [
+      { weightKg: null, dimensions: { lengthCm: 60, widthCm: 40, heightCm: 30 }, quantity: 1 },
+    ]
+    expect(calcularPesoEfectivo(items)).toBeNull()
+  })
+
+  it('array vacío → null', () => {
+    expect(calcularPesoEfectivo([])).toBeNull()
   })
 })
 
