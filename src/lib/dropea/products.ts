@@ -1,6 +1,7 @@
 // src/lib/dropea/products.ts
 // Service layer — queries de productos contra Dropea
 // Úsalo solo desde Server Components / Server Actions (server-only)
+// El filtrado por categoría se hace EN MEMORIA porque Dropea no lo soporta en API
 
 import { getDropeaClient } from './client'
 import { LIST_PRODUCTS_QUERY, GET_PRODUCT_BY_ID_QUERY } from './queries/products'
@@ -16,39 +17,38 @@ export async function listProducts(
   const client = getDropeaClient()
   const variables: Record<string, unknown> = { page, limit }
   if (sort) variables.sort = sort
-  if (category) variables.categories = [category]
 
-  let data: { products: DropeaRawProductPagination }
-
-  try {
-    data = await client.request<{ products: DropeaRawProductPagination }>(
+  if (category) {
+    // Filtrado en memoria: traemos más productos y filtramos por categoría
+    // Nota: con 4028 productos totales, traemos hasta 100 para mantener performance
+    const fetchLimit = Math.max(limit, 100)
+    const data = await client.request<{ products: DropeaRawProductPagination }>(
       LIST_PRODUCTS_QUERY,
-      variables,
+      { page: 1, limit: fetchLimit, ...(sort ? { sort } : {}) },
     )
-  } catch {
-    // Si la API no soporta filtro por categories, caemos a traer todo y filtrar
-    if (category) {
-      const allData = await client.request<{ products: DropeaRawProductPagination }>(
-        LIST_PRODUCTS_QUERY,
-        { page: 1, limit: 100, sort },
-      )
-      const allMapped = allData.products.data.map(mapDropeaProduct).filter(p => p.isPublic)
-      const filtered = allMapped.filter(
-        p => p.category.toLowerCase() === category.toLowerCase(),
-      )
-      const totalFiltered = filtered.length
-      const lastPage = Math.ceil(totalFiltered / limit)
-      const start = (page - 1) * limit
-      return {
-        items: filtered.slice(start, start + limit),
-        total: totalFiltered,
-        currentPage: page,
-        lastPage,
-        perPage: limit,
-      }
+
+    const allMapped = data.products.data.map(mapDropeaProduct).filter(p => p.isPublic)
+    const filtered = allMapped.filter(
+      p => p.category.toLowerCase() === category.toLowerCase(),
+    )
+    const totalFiltered = filtered.length
+    const lastPage = Math.ceil(totalFiltered / limit)
+    const start = (page - 1) * limit
+
+    return {
+      items: filtered.slice(start, start + limit),
+      total: totalFiltered,
+      currentPage: page,
+      lastPage,
+      perPage: limit,
     }
-    throw new Error('Failed to fetch products from Dropea')
   }
+
+  // Sin filtro de categoría — consulta normal
+  const data = await client.request<{ products: DropeaRawProductPagination }>(
+    LIST_PRODUCTS_QUERY,
+    variables,
+  )
 
   const all = data.products.data.map(mapDropeaProduct)
   return {
