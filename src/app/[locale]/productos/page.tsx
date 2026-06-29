@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import { listProducts } from '@/lib/dropea/products'
 import ProductGrid from '@/components/catalog/ProductGrid'
+import Pagination from '@/components/catalog/Pagination'
 import { getTranslations } from 'next-intl/server'
 import { nichoConfig } from '../../../../nicho.config'
 
 export const revalidate = 3600
+const PAGE_SIZE = 40
 
 export async function generateMetadata({
   params,
@@ -36,13 +38,17 @@ export async function generateMetadata({
 
 export default async function ProductosPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ page?: string }>
 }) {
   const { locale } = await params
+  const sp = await searchParams
+  const currentPage = Math.max(1, Number(sp.page) || 1)
   const t = await getTranslations({ locale, namespace: 'products' })
   const category = nichoConfig.category || undefined
-  const { items, total, currentPage, lastPage } = await listProducts(1, 40, undefined, category)
+  const { items, total, lastPage } = await listProducts(currentPage, PAGE_SIZE, undefined, category)
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -64,11 +70,13 @@ export default async function ProductosPage({
       ) : (
         <>
           <ProductGrid products={items} locale={locale} />
-          {total > 40 && (
-            <p className="mt-8 text-center text-sm text-muted-foreground">
-              Mostrando {items.length} de {total} productos
-            </p>
-          )}
+          <Pagination
+            currentPage={currentPage}
+            lastPage={lastPage}
+            basePath={`/${locale}/productos`}
+            total={total}
+            pageSize={PAGE_SIZE}
+          />
         </>
       )}
     </main>
