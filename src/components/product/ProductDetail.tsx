@@ -179,20 +179,20 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
             <AddToCartButton product={product} variantId={selectedVariantId ?? undefined} />
           </div>
         </div>
-      </div>
 
-      {/* Descripción completa */}
-      {product.description && (
-        <section className="mt-16">
-          <h2 className="mb-6 font-heading text-xl font-extrabold text-foreground">
-            {t('tabDescription')}
-          </h2>
-          <div
-            className="prose prose-sm max-w-2xl text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          />
-        </section>
-      )}
+        {/* Descripción completa — misma columna que la galería */}
+        {product.description && (
+          <div className="lg:col-span-7">
+            <h2 className="mb-6 font-heading text-xl font-extrabold text-foreground">
+              {t('tabDescription')}
+            </h2>
+            <div
+              className="prose prose-sm text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
+          </div>
+        )}
+      </div>
 
       <Separator className="mt-16" />
     </div>
