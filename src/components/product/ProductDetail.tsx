@@ -13,12 +13,9 @@ interface ProductDetailProps {
   locale: string
 }
 
-type Tab = 'description' | 'specs' | 'shipping'
-
 export default function ProductDetail({ product, locale }: ProductDetailProps) {
   const t = useTranslations('productDetail')
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<Tab>('description')
   const image = product.images[0]
 
   const fmt = (eur: number) =>
@@ -46,12 +43,6 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
     const pt = calcularEnvio(effectiveWeight, undefined, 'peninsula_pt')
     return { es: { cost: es.costEur, label: es.label }, pt: { cost: pt.costEur, label: pt.label } }
   }, [product])
-
-  const tabs: { key: Tab; label: string }[] = [
-    { key: 'description', label: t('tabDescription') },
-    { key: 'specs', label: t('tabSpecs') },
-    { key: 'shipping', label: t('tabShipping') },
-  ]
 
   return (
     <div>
@@ -110,6 +101,54 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
             />
           )}
 
+          {/* Especificaciones */}
+          <div className="rounded-lg bg-muted p-4">
+            <h3 className="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              {t('tabSpecs')}
+            </h3>
+            <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+              <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
+                <dt className="text-muted-foreground">SKU</dt>
+                <dd className="font-semibold text-foreground">{product.sku}</dd>
+              </div>
+              <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
+                <dt className="text-muted-foreground">{t('weight')}</dt>
+                <dd className="font-semibold text-foreground">{product.weightKg} kg</dd>
+              </div>
+              <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0 sm:col-span-2">
+                <dt className="text-muted-foreground">{t('dimensions')}</dt>
+                <dd className="font-semibold text-foreground">
+                  {product.dimensions.length} × {product.dimensions.width} × {product.dimensions.height} cm
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          {/* Costos de envío */}
+          <div className="rounded-lg bg-muted p-4">
+            <h3 className="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              {t('tabShipping')}
+            </h3>
+            {shippingRates ? (
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center justify-between border-b border-border pb-2">
+                  <span className="text-muted-foreground">🇪🇸 {locale === 'pt' ? 'Espanha' : 'España'}</span>
+                  <span className="font-semibold text-foreground">
+                    {fmt(shippingRates.es.cost)} <span className="text-muted-foreground">({shippingRates.es.label})</span>
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">🇵🇹 Portugal</span>
+                  <span className="font-semibold text-foreground">
+                    {fmt(shippingRates.pt.cost)} <span className="text-muted-foreground">({shippingRates.pt.label})</span>
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t('shippingUnavailable')}</p>
+            )}
+          </div>
+
           {/* Variantes reales — Dropea no distingue color/talla, solo variantes con nombre */}
           {product.variants.length > 0 && (
             <div>
@@ -142,73 +181,18 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
         </div>
       </div>
 
-      {/* Tabs — descripción / especificaciones (reales) / envíos (reales) */}
-      <section className="mt-16">
-        <div className="mb-8 flex gap-8 border-b border-border">
-          {tabs.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`cursor-pointer pb-4 text-sm font-semibold transition-colors ${
-                activeTab === tab.key
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {activeTab === 'description' && (
+      {/* Descripción completa */}
+      {product.description && (
+        <section className="mt-16">
+          <h2 className="mb-6 font-heading text-xl font-extrabold text-foreground">
+            {t('tabDescription')}
+          </h2>
           <div
             className="prose prose-sm max-w-2xl text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
-            dangerouslySetInnerHTML={{ __html: product.description || `<p>${t('noDescription')}</p>` }}
+            dangerouslySetInnerHTML={{ __html: product.description }}
           />
-        )}
-
-        {activeTab === 'specs' && (
-          <dl className="grid max-w-md grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-            <div className="flex justify-between border-b border-border pb-2 sm:block sm:border-0 sm:pb-0">
-              <dt className="text-muted-foreground">SKU</dt>
-              <dd className="font-semibold text-foreground">{product.sku}</dd>
-            </div>
-            <div className="flex justify-between border-b border-border pb-2 sm:block sm:border-0 sm:pb-0">
-              <dt className="text-muted-foreground">{t('weight')}</dt>
-              <dd className="font-semibold text-foreground">{product.weightKg} kg</dd>
-            </div>
-            <div className="flex justify-between border-b border-border pb-2 sm:block sm:border-0 sm:pb-0">
-              <dt className="text-muted-foreground">{t('dimensions')}</dt>
-              <dd className="font-semibold text-foreground">
-                {product.dimensions.length} × {product.dimensions.width} × {product.dimensions.height} cm
-              </dd>
-            </div>
-          </dl>
-        )}
-
-        {activeTab === 'shipping' && (
-          <div className="max-w-md space-y-2 text-sm">
-            {shippingRates ? (
-              <>
-                <div className="flex items-center justify-between border-b border-border py-2">
-                  <span className="text-muted-foreground">🇪🇸 {locale === 'pt' ? 'Espanha' : 'España'}</span>
-                  <span className="font-semibold text-foreground">
-                    {fmt(shippingRates.es.cost)} <span className="text-muted-foreground">({shippingRates.es.label})</span>
-                  </span>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <span className="text-muted-foreground">🇵🇹 Portugal</span>
-                  <span className="font-semibold text-foreground">
-                    {fmt(shippingRates.pt.cost)} <span className="text-muted-foreground">({shippingRates.pt.label})</span>
-                  </span>
-                </div>
-              </>
-            ) : (
-              <p className="text-muted-foreground">{t('shippingUnavailable')}</p>
-            )}
-          </div>
-        )}
-      </section>
+        </section>
+      )}
 
       <Separator className="mt-16" />
     </div>
