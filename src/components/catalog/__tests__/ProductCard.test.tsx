@@ -16,6 +16,14 @@ vi.mock('next/image', () => ({
   ),
 }))
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}))
+
+vi.mock('@/hooks/useCart', () => ({
+  useCartStore: vi.fn(() => () => {}),
+}))
+
 const product: Product = {
   id: '60',
   name: 'Almohada Cervical',

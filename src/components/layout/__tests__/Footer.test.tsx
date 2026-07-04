@@ -6,6 +6,13 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }))
 
+vi.mock('next/image', () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />
+  ),
+}))
+
 vi.mock('next/navigation', () => ({
   useParams: () => ({ locale: 'es' }),
 }))
@@ -29,15 +36,17 @@ vi.mock('next/link', () => ({
 describe('Footer', () => {
   it('shows the current year', () => {
     render(<Footer />)
-    // Year is inside © 2026 Mi Tienda — use a function matcher
+    // Year is inside © 2026 Bamzuk Mascotas — use a function matcher
     expect(
       screen.getByText((content) => content.includes(new Date().getFullYear().toString())),
     ).toBeInTheDocument()
   })
 
-  it('shows the site name', () => {
+  it('shows the logo with the site name as alt text', () => {
     render(<Footer />)
-    expect(screen.getByText('Mi Tienda')).toBeInTheDocument()
+    const logo = screen.getByAltText('Bamzuk Mascotas')
+    expect(logo).toBeInTheDocument()
+    expect(logo).toHaveAttribute('src', '/logo-footer.png')
   })
 
   it('has a link to /es/aviso-legal', () => {

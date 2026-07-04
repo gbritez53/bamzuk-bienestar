@@ -44,7 +44,7 @@ export interface CheckoutPayload {
   shipping: ShippingCalculation
   locale: 'es' | 'pt'
   vatRate: 0.21 | 0.23
-  customer: { name: string; email: string; address: Address }
+  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
   paymentMethod: 'sumup' | 'cod'
   subtotalWithVat: number
   total: number // subtotal+shipping, céntimos

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface PaginationProps {
   currentPage: number
@@ -15,15 +16,17 @@ export default function Pagination({
   total,
   pageSize,
 }: PaginationProps) {
+  const t = useTranslations('pagination')
+
   if (lastPage <= 1) return null
 
   const startItem = (currentPage - 1) * pageSize + 1
   const endItem = Math.min(currentPage * pageSize, total)
 
   return (
-    <nav aria-label="Paginación" className="mt-10 flex flex-col items-center gap-4">
+    <nav aria-label={t('label')} className="mt-10 flex flex-col items-center gap-4">
       <p className="text-sm text-muted-foreground">
-        Mostrando {startItem}–{endItem} de {total} productos
+        {t('showing', { start: startItem, end: endItem, total })}
       </p>
 
       <div className="flex items-center gap-1.5">
@@ -31,7 +34,8 @@ export default function Pagination({
         {currentPage > 1 ? (
           <Link
             href={`${basePath}?page=${currentPage - 1}`}
-            className="flex h-9 items-center justify-center rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
+            aria-label={t('prev')}
+            className="flex h-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +82,7 @@ export default function Pagination({
             <Link
               key={pageNum}
               href={`${basePath}?page=${pageNum}`}
-              className={`flex h-9 min-w-[2.25rem] items-center justify-center rounded-lg px-2 text-sm font-medium transition-all ${
+              className={`flex h-9 min-w-[2.25rem] cursor-pointer items-center justify-center rounded-lg px-2 text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
                   : 'border border-border bg-card text-foreground hover:border-primary/50 hover:text-primary'
@@ -93,7 +97,8 @@ export default function Pagination({
         {currentPage < lastPage ? (
           <Link
             href={`${basePath}?page=${currentPage + 1}`}
-            className="flex h-9 items-center justify-center rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
+            aria-label={t('next')}
+            className="flex h-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

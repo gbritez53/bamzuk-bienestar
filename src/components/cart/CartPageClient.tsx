@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useCartStore } from '@/hooks/useCart'
 import CartSummary from './CartSummary'
+import CartItem from './CartItem'
 import {
   calcularEnvio,
   calcularPesoEfectivo,
@@ -22,8 +22,6 @@ interface CartPageClientProps {
 
 export default function CartPageClient({ locale }: CartPageClientProps) {
   const items = useCartStore(s => s.items)
-  const removeItem = useCartStore(s => s.removeItem)
-  const updateQuantity = useCartStore(s => s.updateQuantity)
   const subtotalCents = useCartStore(s => s.subtotalCents)
   const t = useTranslations('cart')
 
@@ -36,12 +34,6 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
   const freeShipping = esEnvioGratis(subtotalEur)
   const effectiveWeightKg = calcularPesoEfectivo(items)
   const shippingRate = calcularEnvio(effectiveWeightKg, DEFAULT_SHIPPING_SERVICE, zone)
-
-  const fmt = (eur: number) =>
-    eur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
-      style: 'currency',
-      currency: 'EUR',
-    })
 
   const zoneLabel = getZoneLabel(zone, locale)
 
@@ -65,7 +57,7 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
         <p className="mb-2 text-lg font-medium text-foreground">{t('empty')}</p>
         <Link
           href={`/${locale}/productos`}
-          className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
+          className="cursor-pointer text-sm font-medium text-primary hover:text-primary-hover transition-colors"
         >
           {t('continueShopping')}
         </Link>
@@ -74,70 +66,30 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-3">
-      <div className="space-y-4 lg:col-span-2">
+    <div className="grid gap-8 lg:grid-cols-12">
+      <div className="space-y-4 lg:col-span-8">
         {items.map(item => (
-          <div
+          <CartItem
             key={`${item.productId}-${item.variantId ?? ''}`}
-            className="flex gap-4 rounded-xl border border-border bg-card p-4 shadow-sm"
-          >
-            {item.imageUrl && (
-              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              </div>
-            )}
-            <div className="flex flex-1 flex-col gap-2">
-              <p className="text-sm font-medium text-foreground">{item.name}</p>
-              <p className="text-sm font-semibold text-primary">{fmt(item.unitBasePrice / 100)}</p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() =>
-                    updateQuantity(item.productId, item.variantId, item.quantity - 1)
-                  }
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  −
-                </button>
-                <span className="text-sm font-medium text-foreground">{item.quantity}</span>
-                <button
-                  onClick={() =>
-                    updateQuantity(item.productId, item.variantId, item.quantity + 1)
-                  }
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  +
-                </button>
-                <button
-                  onClick={() => removeItem(item.productId, item.variantId)}
-                  className="ml-auto text-xs font-medium text-destructive hover:text-red-700"
-                >
-                  {t('remove')}
-                </button>
-              </div>
-            </div>
-          </div>
+            item={item}
+            locale={locale}
+          />
         ))}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 lg:col-span-4">
         {/* Country selector */}
-        <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-          <label className="block text-xs font-medium text-muted-foreground mb-2">
-            {locale === 'pt' ? 'País de entrega' : 'País de entrega'}
+        <div className="rounded-lg bg-card p-4 shadow-[var(--shadow-sm)]">
+          <label className="mb-2 block text-xs font-semibold text-muted-foreground">
+            {t('deliveryCountry')}
           </label>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setSelectedCountry('ES')}
-              className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+              className={`flex-1 cursor-pointer rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-all ${
                 selectedCountry === 'ES'
-                  ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                  ? 'border-primary bg-primary-light text-primary'
                   : 'border-border bg-card text-foreground hover:border-primary/50'
               }`}
             >
@@ -146,9 +98,9 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
             <button
               type="button"
               onClick={() => setSelectedCountry('PT')}
-              className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+              className={`flex-1 cursor-pointer rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-all ${
                 selectedCountry === 'PT'
-                  ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                  ? 'border-primary bg-primary-light text-primary'
                   : 'border-border bg-card text-foreground hover:border-primary/50'
               }`}
             >
@@ -163,12 +115,46 @@ export default function CartPageClient({ locale }: CartPageClientProps) {
           locale={locale}
           zoneLabel={zoneLabel}
         />
+
         <Link
           href={`/${locale}/checkout`}
-          className="flex w-full items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:shadow-xl"
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary-light px-6 py-4 text-sm font-bold text-primary shadow-[var(--shadow-md)] transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground"
         >
           {t('checkout')}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
         </Link>
+
+        {/* Código promocional — visual, sin lógica de descuentos real todavía */}
+        <div className="rounded-lg bg-card p-4 shadow-[var(--shadow-sm)]">
+          <label className="mb-2 block text-xs font-semibold text-muted-foreground">
+            {t('promoCode')}
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              disabled
+              placeholder={t('promoCodePlaceholder')}
+              className="flex-1 rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none"
+            />
+            <button
+              type="button"
+              disabled
+              className="rounded-lg border-2 border-primary-light px-4 py-2 text-sm font-semibold text-primary opacity-60"
+            >
+              {t('promoCodeApply')}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )

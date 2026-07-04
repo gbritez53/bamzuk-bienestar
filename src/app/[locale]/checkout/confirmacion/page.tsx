@@ -7,11 +7,53 @@ export default async function ConfirmacionPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ id?: string; ref?: string }>
+  searchParams: Promise<{ id?: string; ref?: string; cod?: string; order?: string }>
 }) {
   const { locale } = await params
-  const { id: checkoutId, ref } = await searchParams
+  const { id: checkoutId, ref, cod, order } = await searchParams
   const t = await getTranslations({ locale, namespace: 'common' })
+
+  // Contrareembolso: la orden ya se creó en Dropea desde el form,
+  // acá solo confirmamos visualmente
+  if (cod === '1' && order) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <div className="space-y-5">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/20">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="h-8 w-8 text-success"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          </div>
+
+          <h1 className="text-2xl font-bold text-foreground">
+            {locale === 'pt' ? 'Pedido confirmado!' : '¡Pedido confirmado!'}
+          </h1>
+
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+            <p className="text-xs text-muted-foreground">
+              {locale === 'pt' ? 'Pedido' : 'Pedido'}
+            </p>
+            <p className="mt-1 font-mono text-sm font-medium text-foreground">
+              {ref ? `${ref} · ` : ''}{order}
+            </p>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            {locale === 'pt'
+              ? 'Pagará em dinheiro ao receber a sua encomenda. Receberá um e-mail com os detalhes de envio.'
+              : 'Vas a pagar en efectivo al recibir tu pedido. Te va a llegar un email con los detalles de envío.'}
+          </p>
+        </div>
+      </main>
+    )
+  }
 
   if (!checkoutId) {
     return (
@@ -41,9 +83,10 @@ export default async function ConfirmacionPage({
           locale: payload.locale,
           sumupCheckoutId: checkoutId,
           reference: ref!,
+          paymentMethod: 'PAID',
         })
         orderId = result.orderId
-        customerName = payload.customer.name
+        customerName = payload.customer.firstName
         // Limpiar payload procesado
         await checkoutStore.delete(ref!)
       } else {

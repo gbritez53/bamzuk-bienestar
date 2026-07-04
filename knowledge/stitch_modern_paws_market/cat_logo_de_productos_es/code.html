@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Comprar Todo | Bamzuk Mascotas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#755b00",
+                    "tertiary-fixed-dim": "#c9c6c1",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#715700",
+                    "tertiary-container": "#d5d3cd",
+                    "on-tertiary-fixed-variant": "#474743",
+                    "on-error": "#ffffff",
+                    "primary-container": "#f6cf65",
+                    "on-secondary-container": "#5d6466",
+                    "secondary-fixed-dim": "#c1c8ca",
+                    "surface-dim": "#d1dce0",
+                    "on-secondary-fixed": "#161d1f",
+                    "on-secondary-fixed-variant": "#41484a",
+                    "on-primary-fixed": "#241a00",
+                    "inverse-surface": "#283236",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#584400",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#e7f3f7",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#dae1e3",
+                    "surface-tint": "#755b00",
+                    "inverse-primary": "#e8c25a",
+                    "secondary-fixed": "#dde4e6",
+                    "on-tertiary-fixed": "#1c1c18",
+                    "surface": "#f1fbff",
+                    "surface-container-high": "#dfeaef",
+                    "on-background": "#131d21",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#e8c25a",
+                    "tertiary-fixed": "#e5e2dc",
+                    "surface-container-low": "#eaf5fa",
+                    "surface-bright": "#f1fbff",
+                    "on-surface-variant": "#4d4636",
+                    "surface-variant": "#d9e4e9",
+                    "on-tertiary-container": "#5b5b56",
+                    "surface-container-highest": "#d9e4e9",
+                    "surface-container": "#e4f0f4",
+                    "on-surface": "#131d21",
+                    "secondary": "#586062",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#ffdf90",
+                    "background": "#f1fbff",
+                    "tertiary": "#5f5e5a",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#d0c5b1",
+                    "outline": "#7f7664"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "sm": "12px",
+                    "margin-mobile": "16px",
+                    "md": "24px",
+                    "margin-desktop": "64px",
+                    "base": "8px",
+                    "xl": "80px",
+                    "gutter": "24px",
+                    "lg": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Be Vietnam Pro"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Be Vietnam Pro"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "headline-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #F9F6F0;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 10px 25px rgba(246, 207, 101, 0.15);
+        }
+        .filter-checkbox:checked {
+            background-color: #755b00;
+            border-color: #755b00;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky z-50 shadow-[0px_4px_12px_rgba(246,207,101,0.1)]">
+<div class="flex justify-between items-center px-margin-desktop py-md max-w-[1280px] mx-auto">
+<a class="font-display-lg text-display-lg font-extrabold text-primary dark:text-primary-fixed-dim tracking-tight" href="#">
+            Bamzuk Mascotas
+        </a>
+<nav class="hidden md:flex items-center gap-gutter font-body-md text-body-md">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 hover:opacity-80 transition-all duration-300" href="#">Comprar Todo</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary hover:opacity-80 transition-all duration-300" href="#">Perros</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary hover:opacity-80 transition-all duration-300" href="#">Gatos</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary hover:opacity-80 transition-all duration-300" href="#">Aves</a>
+</nav>
+<div class="flex items-center gap-md">
+<div class="relative hidden lg:block">
+<input class="bg-surface-variant border-none rounded-full py-2 px-6 w-64 focus:ring-2 focus:ring-primary-container text-body-md" placeholder="Buscar productos..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2 text-on-surface-variant">search</span>
+</div>
+<div class="flex gap-sm">
+<button class="hover:-translate-y-0.5 transition-transform p-2">
+<span class="material-symbols-outlined text-primary">shopping_cart</span>
+</button>
+<button class="hover:-translate-y-0.5 transition-transform p-2">
+<span class="material-symbols-outlined text-primary">person</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-margin-desktop py-lg min-h-screen">
+<div class="flex flex-col md:flex-row gap-gutter">
+<!-- Sidebar Filters -->
+<aside class="w-full md:w-64 flex-shrink-0">
+<div class="sticky top-32 space-y-lg">
+<!-- Categories -->
+<div>
+<h3 class="font-headline-md text-headline-md mb-md text-on-background">Categoría</h3>
+<ul class="space-y-sm">
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-secondary group-hover:text-primary transition-colors">Alimento Premium</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-primary font-semibold transition-colors">Juguetes Interactivos</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-secondary group-hover:text-primary transition-colors">Camas y Confort</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-secondary group-hover:text-primary transition-colors">Kits de Aseo</span>
+</label>
+</li>
+</ul>
+</div>
+<!-- Price Range -->
+<div>
+<h3 class="font-headline-md text-headline-md mb-md text-on-background">Rango de Precio</h3>
+<div class="space-y-md">
+<input class="w-full h-2 bg-secondary-container rounded-lg appearance-none cursor-pointer accent-primary" max="500" min="0" type="range"/>
+<div class="flex justify-between items-center text-label-md font-label-md text-on-surface-variant">
+<span>$0</span>
+<span>$500+</span>
+</div>
+</div>
+</div>
+<!-- Brand -->
+<div>
+<h3 class="font-headline-md text-headline-md mb-md text-on-background">Marca</h3>
+<ul class="space-y-sm">
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-secondary group-hover:text-primary transition-colors">WildPaw</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-secondary group-hover:text-primary transition-colors">NutriPet</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline focus:ring-primary text-primary transition-all" type="checkbox"/>
+<span class="font-body-md text-secondary group-hover:text-primary transition-colors">SoftBeds Co.</span>
+</label>
+</li>
+</ul>
+</div>
+<button class="w-full py-sm bg-secondary-container text-on-secondary-container rounded-xl font-label-md hover:bg-outline-variant transition-colors">
+                    Limpiar Filtros
+                </button>
+</div>
+</aside>
+<!-- Product Grid -->
+<section class="flex-grow">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<p class="text-label-md text-secondary uppercase tracking-widest mb-xs">Exploración</p>
+<h1 class="font-display-lg text-display-lg text-on-background">Todos los Esenciales</h1>
+</div>
+<div class="flex items-center gap-md">
+<span class="text-body-md text-secondary">Mostrando 24 productos</span>
+<select class="bg-transparent border-none font-label-md text-primary focus:ring-0 cursor-pointer">
+<option>Ordenar por: Popularidad</option>
+<option>Precio: Menor a Mayor</option>
+<option>Precio: Mayor a Menor</option>
+<option>Novedades</option>
+</select>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Product Card 1 -->
+<div class="product-card group bg-surface-container-lowest rounded-[16px] p-md transition-all duration-300 relative overflow-hidden flex flex-col">
+<div class="absolute top-4 right-4 z-10">
+<button class="bg-white/80 backdrop-blur-md p-2 rounded-full shadow-sm hover:text-error transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+</div>
+<div class="bg-surface-variant/30 rounded-xl aspect-square mb-md overflow-hidden flex items-center justify-center">
+<img alt="Mezcla de Salmón Salvaje Gourmet" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe_vKgbJTGY9zLBsW1sQj_tJPzs_P2nmDLcSs3H-kcSj2wTRpROrzrMbAuyMT9BxNhhzsUS03hlsENeB2wRoRgBXn-e3DS3qhxgGacyNapzmUcXLAWMZmVcswEMBARRCiFRtoJ15sWHqonJM1GlaPs-OYsKkQTiZcqTt05jZqt6_d5R4Ary3nHge3N9JHJPs0aB1vZDIdNb4aIFp1p6-DPxBohtxKmzi2DyN0c1PSF_akDk3mlSqQ"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-secondary px-2 py-1 bg-primary-container/20 rounded-full">Nutrición</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.8</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-sm leading-tight">Mezcla de Salmón Salvaje Gourmet</h3>
+<p class="text-body-md text-secondary line-clamp-2 mb-md">Fórmula alta en proteínas, sin granos, enriquecida con Omega-3 para un pelaje brillante y salud óptima.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-display-lg text-[24px] text-primary">$45.99</span>
+<button class="bg-primary-container text-on-primary-fixed-variant px-6 py-2 rounded-full font-label-md hover:bg-primary hover:text-white transition-all shadow-sm">
+                            Agregar al carrito
+                        </button>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="product-card group bg-surface-container-lowest rounded-[16px] p-md transition-all duration-300 relative overflow-hidden flex flex-col">
+<div class="bg-surface-variant/30 rounded-xl aspect-square mb-md overflow-hidden flex items-center justify-center">
+<img alt="Puzzle de Bambú para Estimulación" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRMqpQSADL9b63oNokCJSDqNa2wOykbubfLHem9vdW8Rp-AsiVguZNilmCEW4i78yeddD3pc4tcRPPlsbewpcL_ueq4RfcQcn3vH-RSVT4qQ4cpFbktRNoLdo7xibmq0YWJYTUMuNFngAgTEyQ-lPbGO4lHYcTdyd9KnwADHD8_95Wpx78JbJKmVUDRd4aMRv1yyrfbqR8CtBWqbiGjwLWB93ANHj-TRYxH3CdCyH-s4zmPLNv-NA"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-secondary px-2 py-1 bg-primary-container/20 rounded-full">Juguetes</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">5.0</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-sm leading-tight">Puzzle de Bambú para Estimulación</h3>
+<p class="text-body-md text-secondary line-clamp-2 mb-md">Estimula el intelecto de tu mascota con este laberinto sostenible con premios ocultos.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-display-lg text-[24px] text-primary">$29.50</span>
+<button class="bg-primary-container text-on-primary-fixed-variant px-6 py-2 rounded-full font-label-md hover:bg-primary hover:text-white transition-all shadow-sm">
+                            Agregar al carrito
+                        </button>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="product-card group bg-surface-container-lowest rounded-[16px] p-md transition-all duration-300 relative overflow-hidden flex flex-col">
+<div class="bg-surface-variant/30 rounded-xl aspect-square mb-md overflow-hidden flex items-center justify-center">
+<img alt="Cama Comfort Cloud" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABSbL7t61XAaRDy8QJh5eck2FCZEdEL52ovR-G5DPFaJJlSf9F-YBq29r3SQo2pa33l-90zBOWTi1TdQE5zNA5YJPWDJXFaeq7XFzia1J5X2o91eE4E2hQt7_zzVoPzLWoAwdJfVZa-9kucP4io7PY9KDbsnTRUI7NP0OQxPIsB1ivFtQlnxTu8TBEVyMN7PvAXcvHZiyZ0bBVmfAXT4aAusJz4aiA6pHVjpLVnrAxH3M0Y7z55PI"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-secondary px-2 py-1 bg-primary-container/20 rounded-full">Camas</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.9</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-sm leading-tight">Cama Comfort Cloud</h3>
+<p class="text-body-md text-secondary line-clamp-2 mb-md">Soporte de espuma viscoelástica diseñado para la salud articular y un sueño profundo.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-display-lg text-[24px] text-primary">$120.00</span>
+<button class="bg-primary-container text-on-primary-fixed-variant px-6 py-2 rounded-full font-label-md hover:bg-primary hover:text-white transition-all shadow-sm">
+                            Agregar al carrito
+                        </button>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="product-card group bg-surface-container-lowest rounded-[16px] p-md transition-all duration-300 relative overflow-hidden flex flex-col">
+<div class="bg-surface-variant/30 rounded-xl aspect-square mb-md overflow-hidden flex items-center justify-center">
+<img alt="Comedero Inteligente para Aviario" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeoSFakB3biPEs5aRmlnEjFY0b1hzLkOI-Q7xMLS4ddtV5R_Y5vXoQKYrhB20fLIiWh6zTEc5reGv4OlJ9th6oyxXL5yxhAqe6yOWVxfWFziRp_IM0ExXOJPHle5wyBi94SalQSHrkjL3LrNiu2Sfkn7-a7LODDASCNaGokOZSbnV7tfNmfyPi_BG1Bd8fxt2mMoJ5l7z_sqNy6ZYlG4v5cQTVw_ClvYo_WXGXsbiwKW-52Pwqy30"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-secondary px-2 py-1 bg-primary-container/20 rounded-full">Aves</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.7</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-sm leading-tight">Comedero Inteligente para Aviario</h3>
+<p class="text-body-md text-secondary line-clamp-2 mb-md">Diseño resistente a la intemperie con tecnología antidesperdicio para aves de jardín.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-display-lg text-[24px] text-primary">$38.00</span>
+<button class="bg-primary-container text-on-primary-fixed-variant px-6 py-2 rounded-full font-label-md hover:bg-primary hover:text-white transition-all shadow-sm">
+                            Agregar al carrito
+                        </button>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="product-card group bg-surface-container-lowest rounded-[16px] p-md transition-all duration-300 relative overflow-hidden flex flex-col">
+<div class="bg-surface-variant/30 rounded-xl aspect-square mb-md overflow-hidden flex items-center justify-center">
+<img alt="Kit de Aseo Silky Shine" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvOtOgDTmuJvbfPKv5PHR_oumokkO0BwB-HIoJqzndrs5fwjfr6bNpIhGa95lMWxFerzzpwxupkUT2mA_caWkuCfqAan84AVNkKX8zhpq1AyHTph7CqVix05xmU1M4r7RRSmBl6Xwdy2Ro-YOnfHR5kZPNhhCbb90JvIGF8CxbFR1KS-Tk1PR7wus8O_rVHBj5MUGxxU5MyyTEZUgL5eU7Bli5ZOXWP1CySVfqp_3LqrZtts1D-2w"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-secondary px-2 py-1 bg-primary-container/20 rounded-full">Aseo</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.6</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-sm leading-tight">Kit de Aseo Silky Shine</h3>
+<p class="text-body-md text-secondary line-clamp-2 mb-md">Herramientas profesionales de eliminación de pelo para un acabado de salón en casa.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-display-lg text-[24px] text-primary">$18.25</span>
+<button class="bg-primary-container text-on-primary-fixed-variant px-6 py-2 rounded-full font-label-md hover:bg-primary hover:text-white transition-all shadow-sm">
+                            Agregar al carrito
+                        </button>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="product-card group bg-surface-container-lowest rounded-[16px] p-md transition-all duration-300 relative overflow-hidden flex flex-col">
+<div class="bg-surface-variant/30 rounded-xl aspect-square mb-md overflow-hidden flex items-center justify-center">
+<img alt="Collar de Cuero Signature" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1s3ZLFT7Q2hTrfvJBJ8c12mSeaWi3ZgqWbKCFT3XZ2wf9Hiqd0jVbZNsXr64Nqnx9wSNMLQ9n7lVtG-045jF8rlNk3rNUE8pOdB0KK_N_9taBrMxKpUvem8rmapmKNhLA5Mas-MRDRk8lcIA5IVu181_5Tpl0jNKXtMVac6w7apTZ5sWaFsUIpGUQQzAR13Jd2uszuTiagt2kWw-81D-IvEUfor41xs6-dDr2rMkDMPHMByXgPFk"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-secondary px-2 py-1 bg-primary-container/20 rounded-full">Accesorios</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.9</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-sm leading-tight">Collar de Cuero Signature</h3>
+<p class="text-body-md text-secondary line-clamp-2 mb-md">Hecho a mano con cuero italiano y hebillas de latón duraderas para un estilo atemporal.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-display-lg text-[24px] text-primary">$55.00</span>
+<button class="bg-primary-container text-on-primary-fixed-variant px-6 py-2 rounded-full font-label-md hover:bg-primary hover:text-white transition-all shadow-sm">
+                            Agregar al carrito
+                        </button>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-xl flex justify-center items-center gap-md">
+<button class="w-12 h-12 flex items-center justify-center rounded-full border-2 border-outline hover:border-primary text-secondary hover:text-primary transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex gap-sm">
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-white font-label-md">1</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full border border-outline-variant text-secondary font-label-md hover:bg-surface-variant transition-all">2</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full border border-outline-variant text-secondary font-label-md hover:bg-surface-variant transition-all">3</button>
+<span class="flex items-end pb-2">...</span>
+<button class="w-12 h-12 flex items-center justify-center rounded-full border border-outline-variant text-secondary font-label-md hover:bg-surface-variant transition-all">12</button>
+</div>
+<button class="w-12 h-12 flex items-center justify-center rounded-full border-2 border-outline hover:border-primary text-secondary hover:text-primary transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-tertiary-fixed dark:bg-surface-container-lowest w-full mt-lg">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-xl max-w-[1280px] mx-auto">
+<div class="space-y-md">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">Bamzuk Mascotas</span>
+<p class="text-body-md text-tertiary dark:text-on-tertiary-container max-w-xs">Proporcionando suministros de calidad premium para los miembros más queridos de tu familia desde 2010.</p>
+</div>
+<div class="space-y-sm">
+<h4 class="font-label-md text-primary font-semibold uppercase tracking-wider">Enlaces Rápidos</h4>
+<ul class="space-y-xs">
+<li><a class="text-tertiary dark:text-on-tertiary-container hover:text-primary hover:underline transition-all" href="#">Perros</a></li>
+<li><a class="text-tertiary dark:text-on-tertiary-container hover:text-primary hover:underline transition-all" href="#">Gatos</a></li>
+<li><a class="text-tertiary dark:text-on-tertiary-container hover:text-primary hover:underline transition-all" href="#">Aves</a></li>
+</ul>
+</div>
+<div class="space-y-sm">
+<h4 class="font-label-md text-primary font-semibold uppercase tracking-wider">Compañía</h4>
+<ul class="space-y-xs">
+<li><a class="text-tertiary dark:text-on-tertiary-container hover:text-primary hover:underline transition-all" href="#">Sobre Nosotros</a></li>
+<li><a class="text-tertiary dark:text-on-tertiary-container hover:text-primary hover:underline transition-all" href="#">Contacto</a></li>
+<li><a class="text-tertiary dark:text-on-tertiary-container hover:text-primary hover:underline transition-all" href="#">Política de Envío</a></li>
+</ul>
+</div>
+<div class="space-y-md">
+<h4 class="font-label-md text-primary font-semibold uppercase tracking-wider">Únete a nuestro boletín</h4>
+<div class="flex flex-col gap-sm">
+<input class="bg-white border-outline rounded-lg py-2 px-4 focus:ring-primary focus:border-primary" placeholder="Tu correo electrónico" type="email"/>
+<button class="bg-primary text-white font-label-md py-2 rounded-lg hover:opacity-90 transition-opacity">Suscribirse</button>
+</div>
+<p class="text-label-sm text-tertiary">© 2024 Bamzuk Mascotas. Todos los derechos reservados.</p>
+</div>
+</div>
+</footer>
+<script>
+    // Micro-interaction for filter check
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const label = this.nextElementSibling;
+            if(this.checked) {
+                label.classList.add('font-semibold', 'text-primary');
+                label.classList.remove('text-secondary');
+            } else {
+                label.classList.remove('font-semibold', 'text-primary');
+                label.classList.add('text-secondary');
+            }
+        });
+    });
+</script>
+</body></html>

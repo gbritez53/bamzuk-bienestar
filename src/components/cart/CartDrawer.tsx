@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { useCartStore } from '@/hooks/useCart'
 import CartItem from './CartItem'
 
@@ -12,6 +13,7 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({ open, onClose, locale }: CartDrawerProps) {
+  const t = useTranslations('cart')
   const items = useCartStore(s => s.items)
   const itemCount = useCartStore(s => s.itemCount)
   const subtotalCents = useCartStore(s => s.subtotalCents)
@@ -51,11 +53,11 @@ export default function CartDrawer({ open, onClose, locale }: CartDrawerProps) {
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col bg-white shadow-2xl">
+      <div className="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col bg-card shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="text-lg font-semibold text-foreground">
-            Carrito{' '}
+          <h2 className="font-heading text-lg font-bold text-foreground">
+            {t('title')}{' '}
             {itemCount > 0 && (
               <span className="text-sm font-normal text-muted-foreground">
                 ({itemCount})
@@ -64,7 +66,7 @@ export default function CartDrawer({ open, onClose, locale }: CartDrawerProps) {
           </h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="rounded-lg cursor-pointer p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Cerrar carrito"
           >
             <svg
@@ -94,7 +96,7 @@ export default function CartDrawer({ open, onClose, locale }: CartDrawerProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
               </svg>
-              <p className="text-sm text-muted-foreground">Tu carrito está vacío</p>
+              <p className="text-sm text-muted-foreground">{t('empty')}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -111,17 +113,17 @@ export default function CartDrawer({ open, onClose, locale }: CartDrawerProps) {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-border bg-accent/50 p-5">
+          <div className="border-t border-border bg-muted p-5">
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground">Total</span>
-              <span className="text-lg font-bold text-primary">{fmt(subtotalEur)}</span>
+              <span className="text-sm font-semibold text-foreground">{t('total')}</span>
+              <span className="font-heading text-lg font-bold text-primary">{fmt(subtotalEur)}</span>
             </div>
             <Link
               href={`/${locale}/checkout`}
               onClick={onClose}
-              className="flex w-full items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:shadow-xl"
+              className="flex w-full cursor-pointer items-center justify-center rounded-xl bg-primary-light px-6 py-3 text-sm font-bold text-primary shadow-[var(--shadow-md)] transition-all hover:bg-primary hover:text-primary-foreground"
             >
-              Ir al checkout
+              {t('checkout')}
             </Link>
           </div>
         )}

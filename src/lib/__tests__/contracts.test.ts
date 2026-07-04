@@ -96,8 +96,9 @@ describe('contracts — type-level tests (Design Decisión 4)', () => {
       expectTypeOf<CheckoutPayload['total']>().toEqualTypeOf<number>()
     })
 
-    it('customer tiene name, email y address tipados', () => {
-      expectTypeOf<CheckoutPayload['customer']['name']>().toEqualTypeOf<string>()
+    it('customer tiene firstName, lastName, email y address tipados', () => {
+      expectTypeOf<CheckoutPayload['customer']['firstName']>().toEqualTypeOf<string>()
+      expectTypeOf<CheckoutPayload['customer']['lastName']>().toEqualTypeOf<string>()
       expectTypeOf<CheckoutPayload['customer']['email']>().toEqualTypeOf<string>()
       expectTypeOf<CheckoutPayload['customer']['address']>().toEqualTypeOf<Address>()
     })

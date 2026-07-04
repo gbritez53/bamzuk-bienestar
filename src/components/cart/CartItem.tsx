@@ -19,7 +19,7 @@ export default function CartItem({ item, locale }: CartItemProps) {
   )
 
   return (
-    <div className="flex gap-4 rounded-xl border border-border bg-card p-3 shadow-sm">
+    <div className="flex gap-4 rounded-lg bg-card p-3 shadow-[var(--shadow-sm)]">
       {item.imageUrl ? (
         <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
           <Image
@@ -45,33 +45,35 @@ export default function CartItem({ item, locale }: CartItemProps) {
         </div>
       )}
       <div className="flex flex-1 flex-col gap-1.5">
-        <p className="text-sm font-medium text-foreground">{item.name}</p>
+        <p className="font-heading text-sm font-bold text-foreground">{item.name}</p>
         <p className="text-sm font-semibold text-primary">{price}</p>
         <div className="mt-auto flex items-center gap-2">
-          <button
-            onClick={() =>
-              updateQuantity(item.productId, item.variantId, item.quantity - 1)
-            }
-            className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Disminuir cantidad"
-          >
-            −
-          </button>
-          <span className="min-w-[1.5rem] text-center text-sm font-medium text-foreground">
-            {item.quantity}
-          </span>
-          <button
-            onClick={() =>
-              updateQuantity(item.productId, item.variantId, item.quantity + 1)
-            }
-            className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Aumentar cantidad"
-          >
-            +
-          </button>
+          <div className="flex items-center gap-1 rounded-full border border-border bg-muted px-1 py-0.5">
+            <button
+              onClick={() =>
+                updateQuantity(item.productId, item.variantId, item.quantity - 1)
+              }
+              className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-primary transition-colors hover:bg-primary-light"
+              aria-label="Disminuir cantidad"
+            >
+              −
+            </button>
+            <span className="min-w-[1.25rem] text-center text-xs font-semibold text-foreground">
+              {item.quantity}
+            </span>
+            <button
+              onClick={() =>
+                updateQuantity(item.productId, item.variantId, item.quantity + 1)
+              }
+              className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-primary transition-colors hover:bg-primary-light"
+              aria-label="Aumentar cantidad"
+            >
+              +
+            </button>
+          </div>
           <button
             onClick={() => removeItem(item.productId, item.variantId)}
-            className="ml-auto text-xs font-medium text-destructive transition-colors hover:text-red-700"
+            className="ml-auto cursor-pointer text-xs font-semibold text-destructive transition-colors hover:opacity-80"
             aria-label="Eliminar"
           >
             Eliminar

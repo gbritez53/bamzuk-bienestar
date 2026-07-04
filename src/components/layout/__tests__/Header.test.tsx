@@ -7,8 +7,17 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }))
 
+vi.mock('next/image', () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />
+  ),
+}))
+
 vi.mock('next/navigation', () => ({
   useParams: () => ({ locale: 'es' }),
+  usePathname: () => '/es',
+  useSearchParams: () => new URLSearchParams(),
 }))
 
 vi.mock('next/link', () => ({
@@ -38,14 +47,16 @@ beforeEach(() => {
 })
 
 describe('Header', () => {
-  it('renders and shows the site name', () => {
+  it('renders the logo with the site name as alt text', () => {
     render(<Header />)
-    expect(screen.getByText('Mi Tienda')).toBeInTheDocument()
+    const logo = screen.getByAltText('Bamzuk Mascotas')
+    expect(logo).toBeInTheDocument()
+    expect(logo).toHaveAttribute('src', '/logo-hz.png')
   })
 
   it('has a link to the products page with locale prefix', () => {
     render(<Header />)
-    const link = screen.getByRole('link', { name: /products/i })
+    const link = screen.getByRole('link', { name: /shopAll/i })
     expect(link).toHaveAttribute('href', '/es/productos')
   })
 

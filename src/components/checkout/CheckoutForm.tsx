@@ -7,6 +7,7 @@ import {
   createSumUpCheckout,
   saveCheckoutPayload,
   generateOrderReference,
+  createCodOrder,
 } from '@/app/[locale]/checkout/actions'
 import { calcularEnvio, calcularPesoEfectivo, getZoneFromCountry, DEFAULT_SHIPPING_SERVICE } from '@/lib/shipping'
 import { Button } from '@/components/ui/button'
@@ -23,6 +24,7 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
   const subtotalCents = useCartStore(s => s.subtotalCents)
   const clearCart = useCartStore(s => s.clearCart)
   const [error, setError] = useState<string | null>(null)
+  const [paymentMethod, setPaymentMethod] = useState<'sumup' | 'cod'>('sumup')
 
   // Calcular envío
   const effectiveWeight = calcularPesoEfectivo(items)
@@ -40,15 +42,38 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
         const form = e.currentTarget
         const formData = new FormData(form)
 
-        const name = formData.get('name') as string
+        const firstName = formData.get('firstName') as string
+        const lastName = formData.get('lastName') as string
         const email = formData.get('email') as string
+        const phone = formData.get('phone') as string
         const address = formData.get('address') as string
         const city = formData.get('city') as string
         const postalCode = formData.get('postalCode') as string
         const country = formData.get('country') as 'ES' | 'PT'
 
-        if (!name || !email || !address || !city || !postalCode) {
+        if (!firstName || !lastName || !email || !phone || !address || !city || !postalCode) {
           setError('Completá todos los campos obligatorios')
+          return
+        }
+
+        const customer = {
+          firstName,
+          lastName,
+          email,
+          phone,
+          address: { line: address, city, postalCode, country },
+        }
+
+        // Contrareembolso: no pasa por SumUp — la orden se crea directa
+        // en Dropea y el cliente paga al recibir
+        if (paymentMethod === 'cod') {
+          const { orderId, reference: codRef } = await createCodOrder({
+            items,
+            customer,
+            locale,
+          })
+          clearCart()
+          window.location.href = `/${locale}/checkout/confirmacion?cod=1&order=${encodeURIComponent(orderId)}&ref=${encodeURIComponent(codRef)}`
           return
         }
 
@@ -58,7 +83,7 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
         await saveCheckoutPayload({
           reference,
           items,
-          customer: { name, email, address: { line: address, city, postalCode, country } },
+          customer,
           locale,
           subtotalCents,
           shippingEur,
@@ -102,18 +127,35 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
           {t('billingDetails') || 'Datos de facturación'}
         </h2>
         <div className="grid gap-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-foreground">
-              {t('name')}
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              required
-              placeholder={t('name')}
-              className={fieldClass}
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-foreground">
+                {t('firstName')}
+              </label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                required
+                autoComplete="given-name"
+                placeholder={t('firstName')}
+                className={fieldClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-foreground">
+                {t('lastName')}
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                required
+                autoComplete="family-name"
+                placeholder={t('lastName')}
+                className={fieldClass}
+              />
+            </div>
           </div>
 
           <div>
@@ -126,6 +168,21 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
               type="email"
               required
               placeholder={t('email')}
+              className={fieldClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-foreground">
+              {t('phone')}
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              autoComplete="tel"
+              placeholder="+34 600 000 000"
               className={fieldClass}
             />
           </div>
@@ -228,6 +285,37 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
         </div>
       </div>
 
+      {/* Método de pago */}
+      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <h3 className="mb-3 text-sm font-semibold text-foreground">
+          {t('paymentMethod')}
+        </h3>
+        <div className="space-y-2">
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-3.5 text-sm transition-colors has-checked:border-primary has-checked:bg-primary-light/30">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="sumup"
+              checked={paymentMethod === 'sumup'}
+              onChange={() => setPaymentMethod('sumup')}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="font-medium text-foreground">{t('payCard')}</span>
+          </label>
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-3.5 text-sm transition-colors has-checked:border-primary has-checked:bg-primary-light/30">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="cod"
+              checked={paymentMethod === 'cod'}
+              onChange={() => setPaymentMethod('cod')}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="font-medium text-foreground">{t('payCod')}</span>
+          </label>
+        </div>
+      </div>
+
       <Separator />
 
       {error && (
@@ -241,7 +329,9 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
         disabled={isPending || items.length === 0}
         className="w-full py-3.5 text-base"
       >
-        {isPending ? t('processing') : `${t('pay') || 'Pagar'} — ${totalEur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', { style: 'currency', currency: 'EUR' })}`}
+        {isPending
+          ? t('processing')
+          : `${paymentMethod === 'cod' ? t('confirmOrder') : t('pay')} — ${totalEur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', { style: 'currency', currency: 'EUR' })}`}
       </Button>
     </form>
   )

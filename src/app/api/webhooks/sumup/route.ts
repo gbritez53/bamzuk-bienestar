@@ -51,6 +51,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           locale: savedPayload.locale,
           sumupCheckoutId: checkoutId,
           reference,
+          paymentMethod: 'PAID',
         })
         console.info(
           `[sumup-webhook] order created — checkout: ${checkoutId}, order: ${result.orderId}`,

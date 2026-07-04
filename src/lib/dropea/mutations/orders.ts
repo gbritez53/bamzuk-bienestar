@@ -5,16 +5,28 @@ import { gql } from 'graphql-request'
 
 /**
  * Crea una orden en Dropea.
- * Variables: input (OrderCreateInput!)
+ * OJO: la API NO recibe un objeto "input" — cada campo va como argumento
+ * suelto con su propio tipo (ver knowledge/order_create_mutation.md).
  * Se llama SOLO después de pago autorizado (SumUp status=PAID) o COD.
  */
 export const CREATE_ORDER_MUTATION = gql`
-  mutation OrderCreate($input: OrderCreateInput!) {
-    orderCreate(input: $input) {
+  mutation OrderCreate(
+    $shop_id: Int!
+    $payment_method: PaymentMethodEnum!
+    $customer: CustomerInputType!
+    $products: [OrderProductInputType!]!
+    $external_order_name: String
+  ) {
+    orderCreate(
+      shop_id: $shop_id
+      payment_method: $payment_method
+      customer: $customer
+      products: $products
+      external_order_name: $external_order_name
+    ) {
       id
       status
-      total
-      createdAt
+      total_amount
     }
   }
 `

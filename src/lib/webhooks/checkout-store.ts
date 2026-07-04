@@ -6,8 +6,10 @@ import type { CartItem, Address } from '@/lib/contracts'
 export interface CheckoutPayload {
   items: CartItem[]
   customer: {
-    name: string
+    firstName: string
+    lastName: string
     email: string
+    phone: string
     address: Address
   }
   locale: string

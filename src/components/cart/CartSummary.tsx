@@ -28,14 +28,14 @@ export default function CartSummary({
   const totalEur = subtotalEur + (isFreeShipping ? 0 : shippingEur)
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-      <h2 className="mb-5 text-lg font-semibold text-foreground">
-        {locale === 'pt' ? 'Resumo' : 'Resumen'}
+    <div className="rounded-lg bg-card p-6 shadow-[var(--shadow-lg)]">
+      <h2 className="mb-5 font-heading text-xl font-bold text-foreground">
+        {t('summaryTitle')}
       </h2>
-      <dl className="space-y-3">
+      <dl className="space-y-3 border-b border-border pb-5">
         <div className="flex justify-between text-sm">
           <dt className="text-muted-foreground">{t('subtotal')}</dt>
-          <dd className="font-medium text-foreground">{fmt(subtotalEur)}</dd>
+          <dd className="font-semibold text-foreground">{fmt(subtotalEur)}</dd>
         </div>
         <div className="flex justify-between text-sm">
           <dt className="text-muted-foreground">
@@ -46,17 +46,17 @@ export default function CartSummary({
           </dt>
           <dd
             className={
-              isFreeShipping ? 'font-medium text-success' : 'font-medium text-foreground'
+              isFreeShipping ? 'font-semibold text-success' : 'font-semibold text-foreground'
             }
           >
             {isFreeShipping ? t('freeShipping') : fmt(shippingEur)}
           </dd>
         </div>
-        <div className="border-t border-border pt-3 flex justify-between text-base font-semibold">
-          <dt className="text-foreground">{t('total')}</dt>
-          <dd className="text-primary">{fmt(totalEur)}</dd>
-        </div>
       </dl>
+      <div className="flex justify-between pt-5 font-heading text-lg font-bold">
+        <span className="text-foreground">{t('total')}</span>
+        <span className="text-primary">{fmt(totalEur)}</span>
+      </div>
     </div>
   )
 }

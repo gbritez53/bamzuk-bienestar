@@ -29,10 +29,12 @@ vi.mock('@/hooks/useCart', () => ({
 }))
 
 describe('CheckoutForm', () => {
-  it('renderiza los campos requeridos', () => {
+  it('renderiza los campos requeridos, con nombre y apellido separados', () => {
     render(<CheckoutForm locale="es" />)
-    expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^firstName$/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^lastName$/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/phone/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/address/i)).toBeInTheDocument()
   })
 

@@ -34,7 +34,7 @@ function getSumupCredentials(): { apiKey: string; merchantCode: string } {
 export interface SaveCheckoutPayloadInput {
   reference: string
   items: CartItem[]
-  customer: { name: string; email: string; address: Address }
+  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
   locale: string
   subtotalCents: number
   shippingEur: number
@@ -110,12 +110,18 @@ export async function verifySumUpPayment(
 
 // ── Dropea order ───────────────────────────────────────────────────────────
 
+// PAID debita el costo de la wallet de Dropea (requiere saldo) — se usa
+// cuando el cliente ya pagó con tarjeta via SumUp. CASH_ON_DELIVERY crea
+// el pedido sin exigir saldo — el cliente paga al recibir.
+export type DropeaPaymentMethod = 'PAID' | 'CASH_ON_DELIVERY'
+
 export interface CreateOrderInput {
   items: CartItem[]
-  customer: { name: string; email: string; address: Address }
+  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
   locale: string
-  sumupCheckoutId: string
   reference: string
+  paymentMethod: DropeaPaymentMethod
+  sumupCheckoutId?: string
 }
 
 export async function createDropeaOrder(
@@ -131,46 +137,68 @@ export async function createDropeaOrder(
 
   const client = getDropeaClient()
 
-  // Intentar con todos los datos; si Dropea rechaza campos, caemos a básico
-  const fullInput = {
+  const variables = {
     shop_id: parseInt(shopId, 10),
-    notes: `SumUp: ${input.sumupCheckoutId} | Ref: ${input.reference}`,
-    items: input.items.map(item => ({
-      product_id: parseInt(item.productId, 10),
-      variant_id: item.variantId ? parseInt(item.variantId, 10) : null,
-      quantity: item.quantity,
-      price: item.unitBasePrice / 100,
-    })),
-    shipping: {
-      name: input.customer.name,
+    payment_method: input.paymentMethod,
+    external_order_name: input.reference,
+    customer: {
+      first_name: input.customer.firstName,
+      last_name: input.customer.lastName,
       email: input.customer.email,
+      phone: input.customer.phone,
       address: input.customer.address.line,
       city: input.customer.address.city,
-      postal_code: input.customer.address.postalCode,
+      zip: input.customer.address.postalCode,
       country: input.customer.address.country,
     },
+    products: input.items.map(item => {
+      const unitPriceEur = item.unitBasePrice / 100
+      return {
+        product_id: parseInt(item.productId, 10),
+        unit_price: unitPriceEur,
+        quantity: item.quantity,
+        total_value: Math.round(unitPriceEur * item.quantity * 100) / 100,
+      }
+    }),
   }
 
-  try {
-    const data = await client.request<{ orderCreate: { id: string } }>(
-      CREATE_ORDER_MUTATION,
-      { input: fullInput },
+  const data = await client.request<{
+    orderCreate: { id: string; status: string; total_amount: number }
+  }>(CREATE_ORDER_MUTATION, variables)
+
+  if (input.sumupCheckoutId) {
+    console.info(
+      `[createDropeaOrder] order ${data.orderCreate.id} created — SumUp checkout: ${input.sumupCheckoutId}`,
     )
-    return { orderId: data.orderCreate.id }
-  } catch {
-    // Fallback: algunos campos pueden no existir en el schema de Dropea
-    // Enviamos solo shop_id + notas (lo mínimo que funciona)
-    const data = await client.request<{ orderCreate: { id: string } }>(
-      CREATE_ORDER_MUTATION,
-      {
-        input: {
-          shop_id: parseInt(shopId, 10),
-          notes: `SumUp: ${input.sumupCheckoutId} | Ref: ${input.reference} | Cliente: ${input.customer.name}`,
-        },
-      },
-    )
-    return { orderId: data.orderCreate.id }
   }
+
+  return { orderId: data.orderCreate.id }
+}
+
+// ── Contrareembolso (COD) ───────────────────────────────────────────────────
+
+export interface CreateCodOrderInput {
+  items: CartItem[]
+  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
+  locale: string
+}
+
+/**
+ * Flujo contrareembolso: no pasa por SumUp — crea la orden en Dropea
+ * directamente con CASH_ON_DELIVERY (no exige saldo en la wallet).
+ */
+export async function createCodOrder(
+  input: CreateCodOrderInput,
+): Promise<{ orderId: string; reference: string }> {
+  const reference = await generateOrderReference()
+  const { orderId } = await createDropeaOrder({
+    items: input.items,
+    customer: input.customer,
+    locale: input.locale,
+    reference,
+    paymentMethod: 'CASH_ON_DELIVERY',
+  })
+  return { orderId, reference }
 }
 
 // ── Helper ─────────────────────────────────────────────────────────────────

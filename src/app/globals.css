@@ -1,43 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0F172A;
+  /* Nicho theme — Bamzuk Mascotas (tienda de mascotas, tema claro) */
+  --background: #f9f6f0; /* tertiary off-white — fondo general */
+  --foreground: #2d3436; /* secondary charcoal — texto principal */
 
-  /* Nicho theme — violeta + azul para electrónica/bienestar */
-  --primary: #7C3AED;
+  /* Primary = el dorado oscuro del logo, usado como color de TEXTO/estado
+     activo (enlaces, precios, iconos, botones sólidos). El amarillo brillante
+     de marca (#F6CF65) se usa como "primary-light": fondos, hero, badges,
+     pills — nunca como color de texto porque no cumple contraste WCAG. */
+  --primary: #755b00;
   --primary-foreground: #ffffff;
-  --primary-hover: #6D28D9;
-  --primary-light: #EDE9FE;
+  --primary-hover: #5c4700;
+  --primary-light: #f6cf65;
 
-  --secondary: #0EA5E9;
+  /* Secondary = charcoal, para acentos de alto contraste (bordes, iconos) */
+  --secondary: #2d3436;
   --secondary-foreground: #ffffff;
-  --secondary-hover: #0284C7;
-  --secondary-light: #E0F2FE;
+  --secondary-hover: #1e2426;
+  --secondary-light: #e7e5df;
 
-  --accent: #F8FAFC;
-  --accent-foreground: #0F172A;
+  /* Accent = superficie blanca pura para cards/containers "flotantes" */
+  --accent: #ffffff;
+  --accent-foreground: #2d3436;
 
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
+  /* Neutral (DESIGN.md) → muted-foreground: texto secundario / disabled */
+  --muted: #f1eee6;
+  --muted-foreground: #636e72;
 
-  --success: #10B981;
-  --success-light: #D1FAE5;
+  --success: #10b981;
+  --success-light: #d1fae5;
 
-  --destructive: #EF4444;
-  --destructive-light: #FEE2E2;
+  --destructive: #ba1a1a;
+  --destructive-light: #ffdad6;
 
-  --border: #E2E8F0;
+  --border: #e5e1d5;
   --card: #ffffff;
-  --card-foreground: #0F172A;
+  --card-foreground: #2d3436;
 
-  --radius: 0.75rem;
-  --radius-lg: 1rem;
+  --radius: 0.5rem; /* botones / inputs */
+  --radius-lg: 1rem; /* cards / banners */
 
-  --header-bg: rgba(255, 255, 255, 0.8);
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --header-bg: rgba(249, 246, 240, 0.85);
+  /* Sombras suaves con tinte amarillo cálido (DESIGN.md — Elevation) */
+  --shadow-sm: 0 1px 2px 0 rgba(246, 207, 101, 0.08);
+  --shadow-md: 0px 4px 12px rgba(246, 207, 101, 0.12);
+  --shadow-lg: 0px 10px 25px rgba(246, 207, 101, 0.15);
 }
 
 @theme inline {
@@ -67,10 +75,14 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
-  --font-sans: var(--font-geist-sans);
+  /* Plus Jakarta Sans para headings/precios, Be Vietnam Pro para body
+     (variables reales seteadas por next/font/google en src/app/layout.tsx) */
+  --font-sans: var(--font-body-sans);
+  --font-heading: var(--font-heading-sans);
   --font-mono: var(--font-geist-mono);
 
   --radius: var(--radius);
+  --radius-lg: var(--radius-lg);
 }
 
 body {

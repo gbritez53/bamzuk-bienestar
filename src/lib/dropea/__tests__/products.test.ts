@@ -23,9 +23,11 @@ const rawProduct = {
   variants: [],
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   mockRequest.mockReset()
   __setDropeaClient(mockClient)
+  const { __resetCatalogCache } = await import('@/lib/dropea/products')
+  __resetCatalogCache()
 })
 
 describe('listProducts', () => {
@@ -96,6 +98,78 @@ describe('listProducts', () => {
     expect(result.items).toHaveLength(1)
     expect(result.items[0]?.id).toBe('1')
     expect(result.total).toBe(1)
+  })
+
+  it('excluye productos con pvpr 0 (sin precio de venta cargado)', async () => {
+    mockRequest.mockResolvedValue({
+      products: {
+        data: [rawProduct, { ...rawProduct, id: '62', pvpr: 0 }],
+        total: 2,
+        current_page: 1,
+        last_page: 1,
+        per_page: 20,
+      },
+    })
+    const { listProducts } = await import('@/lib/dropea/products')
+    const result = await listProducts()
+    expect(result.items).toHaveLength(1)
+    expect(result.items[0]?.id).toBe('60')
+  })
+
+  it('excluye productos con pvpr 0 también al filtrar por categoría', async () => {
+    mockRequest.mockResolvedValue({
+      products: {
+        data: [
+          { ...rawProduct, id: '1', category: 'Mascotas' },
+          { ...rawProduct, id: '2', category: 'Mascotas', pvpr: 0 },
+        ],
+        total: 2,
+        current_page: 1,
+        last_page: 1,
+        per_page: 50,
+      },
+    })
+    const { listProducts } = await import('@/lib/dropea/products')
+    const result = await listProducts(1, 40, undefined, 'Mascotas')
+    expect(result.items).toHaveLength(1)
+    expect(result.total).toBe(1)
+  })
+
+  it('recorre TODAS las páginas que reporta last_page al filtrar por categoría', async () => {
+    // Dropea capea per_page a 50 aunque se pida más — el scan debe
+    // confiar en last_page, no en el limit solicitado
+    mockRequest.mockImplementation((_query: unknown, vars: { page: number }) =>
+      Promise.resolve({
+        products: {
+          data: [{ ...rawProduct, id: String(vars.page), category: 'Mascotas' }],
+          total: 3,
+          current_page: vars.page,
+          last_page: 3,
+          per_page: 50,
+        },
+      }),
+    )
+    const { listProducts } = await import('@/lib/dropea/products')
+    const result = await listProducts(1, 40, undefined, 'Mascotas')
+    expect(mockRequest).toHaveBeenCalledTimes(3)
+    expect(result.total).toBe(3)
+    expect(result.items.map(p => p.id).sort()).toEqual(['1', '2', '3'])
+  })
+
+  it('cachea el escaneo de catálogo entre llamadas (no re-fetchea dentro del TTL)', async () => {
+    mockRequest.mockResolvedValue({
+      products: {
+        data: [{ ...rawProduct, id: '1', category: 'Mascotas' }],
+        total: 1,
+        current_page: 1,
+        last_page: 1,
+        per_page: 50,
+      },
+    })
+    const { listProducts } = await import('@/lib/dropea/products')
+    await listProducts(1, 40, undefined, 'Mascotas')
+    await listProducts(2, 40, undefined, 'Mascotas')
+    expect(mockRequest).toHaveBeenCalledTimes(1)
   })
 })
 

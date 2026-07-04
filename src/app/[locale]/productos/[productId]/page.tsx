@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { getProductById } from '@/lib/dropea/products'
 import ProductDetail from '@/components/product/ProductDetail'
 import { nichoConfig } from '../../../../../nicho.config'
@@ -16,7 +17,7 @@ export async function generateMetadata({
   const id = parseInt(productId, 10)
   if (isNaN(id)) return { title: nichoConfig.name }
 
-  const product = await getProductById(id)
+  const product = await getProductById(id, locale)
   if (!product) return { title: nichoConfig.name }
 
   const siteUrl = nichoConfig.domain
@@ -53,8 +54,16 @@ export default async function ProductoPage({
   const id = parseInt(productId, 10)
   if (isNaN(id)) notFound()
 
-  const product = await getProductById(id)
+  const product = await getProductById(id, locale)
   if (!product) notFound()
+  // Productos fuera del nicho o sin precio de venta (pvpr=0) no existen
+  // para esta tienda, ni siquiera por URL directa
+  const outsideNicho =
+    nichoConfig.category &&
+    product.category.toLowerCase() !== nichoConfig.category.toLowerCase()
+  if (outsideNicho || product.pvpr <= 0) notFound()
+
+  const t = await getTranslations({ locale, namespace: 'productDetail' })
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -73,17 +82,26 @@ export default async function ProductoPage({
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Link
-        href={`/${locale}/productos`}
-        className="mb-6 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900"
-      >
-        ← Volver al catálogo
-      </Link>
+      <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Link href={`/${locale}`} className="cursor-pointer transition-colors hover:text-primary">
+          {t('breadcrumbHome')}
+        </Link>
+        <span aria-hidden="true">/</span>
+        <Link href={`/${locale}/productos`} className="cursor-pointer transition-colors hover:text-primary">
+          {t('breadcrumbCatalog')}
+        </Link>
+        {product.category && (
+          <>
+            <span aria-hidden="true">/</span>
+            <span className="font-semibold text-primary">{product.category}</span>
+          </>
+        )}
+      </nav>
       <ProductDetail product={product} locale={locale} />
     </main>
   )

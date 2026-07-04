@@ -1,30 +1,88 @@
 {
   "home": {
-    "title": "Bem-vindo à {storeName}",
-    "subtitle": "Descubra os melhores produtos com envio rápido para toda a Espanha e Portugal.",
-    "cta": "Ver produtos"
+    "badge": "Novidades",
+    "title": "Tudo para o teu Melhor Amigo Peludo.",
+    "subtitle": "Descobre fornecimentos premium selecionados, brinquedos e snacks saudáveis pensados para o estilo de vida enérgico dos teus membros favoritos da família.",
+    "cta": "Comprar Agora",
+    "ctaSecondary": "Explorar Catálogo",
+    "categoriesTitle": "Categorias Populares",
+    "categoriesSubtitle": "Explora produtos por espécie de animal",
+    "categoriesCta": "Ver todas as categorias",
+    "category": {
+      "dogs": "Cães",
+      "cats": "Gatos",
+      "birds": "Aves",
+      "smallPets": "Animais Pequenos",
+      "collars": "Coleiras",
+      "health": "Saúde"
+    },
+    "featuredTitle": "Produtos em Destaque",
+    "featuredCta": "Ver todos"
   },
   "products": {
-    "title": "Produtos",
+    "title": "Todos os Essenciais",
+    "eyebrow": "Exploração",
+    "empty": "Não há produtos disponíveis nesta categoria.",
     "addToCart": "Adicionar ao carrinho",
     "viewDetails": "Ver detalhes"
   },
+  "pagination": {
+    "label": "Paginação",
+    "showing": "Mostrando {start}–{end} de {total} produtos",
+    "prev": "Página anterior",
+    "next": "Próxima página"
+  },
+  "catalogFilters": {
+    "category": "Categoria",
+    "categoryOptions": {
+      "premiumFood": "Alimentação Premium",
+      "interactiveToys": "Brinquedos Interativos",
+      "bedsComfort": "Camas e Conforto",
+      "groomingKits": "Kits de Higiene"
+    },
+    "price": "Faixa de Preço",
+    "brand": "Marca",
+    "brandOptions": {
+      "wildpaw": "WildPaw",
+      "nutripet": "NutriPet",
+      "softbeds": "SoftBeds Co."
+    }
+  },
+  "productDetail": {
+    "breadcrumbHome": "Início",
+    "breadcrumbCatalog": "Produtos",
+    "tabDescription": "Descrição",
+    "tabSpecs": "Especificações",
+    "tabShipping": "Envios",
+    "variants": "Variantes disponíveis",
+    "noDescription": "Este produto ainda não tem descrição.",
+    "weight": "Peso",
+    "dimensions": "Dimensões",
+    "shippingUnavailable": "Não foi possível calcular o envio para este produto."
+  },
   "cart": {
-    "title": "Carrinho",
+    "title": "A Tua Sacola de Compras",
     "empty": "O seu carrinho está vazio",
     "continueShopping": "Continuar a comprar",
     "subtotal": "Subtotal",
     "shipping": "Envio",
     "freeShipping": "Grátis",
     "total": "Total",
-    "checkout": "Finalizar compra",
-    "remove": "Remover"
+    "checkout": "Finalizar Compra",
+    "remove": "Remover",
+    "summaryTitle": "Resumo do Pedido",
+    "deliveryCountry": "País de entrega",
+    "promoCode": "Código Promocional",
+    "promoCodePlaceholder": "Insere o teu código",
+    "promoCodeApply": "Aplicar"
   },
   "checkout": {
     "title": "Checkout",
     "billingDetails": "Dados de faturação",
-    "name": "Nome completo",
+    "firstName": "Nome",
+    "lastName": "Apelido",
     "email": "E-mail",
+    "phone": "Telefone",
     "address": "Morada",
     "city": "Cidade",
     "postalCode": "Código postal",
@@ -33,16 +91,35 @@
     "shipping": "Envio",
     "total": "Total",
     "pay": "Pagar",
-    "processing": "A processar..."
+    "processing": "A processar...",
+    "paymentMethod": "Método de pagamento",
+    "payCard": "Cartão de crédito/débito",
+    "payCod": "Dinheiro — paga ao receber",
+    "confirmOrder": "Confirmar pedido"
   },
   "navigation": {
-    "products": "Produtos"
+    "shopAll": "Comprar Tudo",
+    "dogs": "Cães",
+    "cats": "Gatos",
+    "birds": "Aves",
+    "searchPlaceholder": "Procurar produtos..."
+  },
+  "language": {
+    "selectorLabel": "Selecionar idioma",
+    "es": "Español",
+    "pt": "Português"
   },
   "footer": {
+    "tagline": "Fornecimentos de qualidade premium para os membros mais queridos da tua família.",
+    "categories": "Categorias",
+    "quickLinks": "Links Rápidos",
     "avisoLegal": "Aviso Legal",
     "privacidad": "Política de Privacidade",
     "devoluciones": "Devoluções",
-    "cookies": "Política de Cookies"
+    "cookies": "Política de Cookies",
+    "newsletter": "Newsletter",
+    "newsletterHint": "Fica a saber das nossas novidades e ofertas para o teu animal.",
+    "rightsReserved": "Todos os direitos reservados."
   },
   "common": {
     "error": "Ocorreu um erro",
