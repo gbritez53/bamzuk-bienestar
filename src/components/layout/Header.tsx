@@ -11,11 +11,6 @@ import { Badge } from '@/components/ui/badge'
 import CartDrawer from '@/components/cart/CartDrawer'
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher'
 
-// Links de categoría — hoy son solo decorativos/de navegación general.
-// Dropea no expone categorías de mascotas reales todavía, así que apuntan
-// al catálogo completo (`/productos`) en vez de filtrar por categoría.
-const CATEGORY_LINKS = ['dogs', 'cats', 'birds'] as const
-
 export default function Header() {
   const t = useTranslations('navigation')
   const { itemCount } = useCartStore()
@@ -47,15 +42,6 @@ export default function Header() {
             >
               {t('shopAll')}
             </Link>
-            {CATEGORY_LINKS.map(key => (
-              <Link
-                key={key}
-                href={`/${locale}/productos`}
-                className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-              >
-                {t(key)}
-              </Link>
-            ))}
           </div>
 
           {/* Search (visual — sin lógica de búsqueda real todavía) */}

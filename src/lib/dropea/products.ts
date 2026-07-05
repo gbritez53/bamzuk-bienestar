@@ -101,9 +101,26 @@ export async function listProducts(
   sort?: string,
   category?: string,
   locale = 'es',
+  filters?: { search?: string; minPrice?: number; maxPrice?: number },
 ): Promise<ProductPage> {
   if (category) {
-    const allProducts = await fetchAllByCategory(category, sort)
+    let allProducts = await fetchAllByCategory(category, sort)
+
+    // Filtros en memoria (Dropea no los soporta server-side)
+    if (filters?.search) {
+      const q = filters.search.toLowerCase()
+      allProducts = allProducts.filter(
+        p =>
+          p.name.toLowerCase().includes(q) ||
+          (p.description || '').toLowerCase().includes(q),
+      )
+    }
+    if (filters?.minPrice != null) {
+      allProducts = allProducts.filter(p => p.pvpr >= filters.minPrice!)
+    }
+    if (filters?.maxPrice != null) {
+      allProducts = allProducts.filter(p => p.pvpr <= filters.maxPrice!)
+    }
 
     const totalFiltered = allProducts.length
     const totalLastPage = Math.ceil(totalFiltered / limit)

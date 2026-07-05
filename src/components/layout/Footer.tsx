@@ -22,8 +22,8 @@ export default function Footer() {
           <Image
             src="/logo-footer.png"
             alt={nichoConfig.name}
-            width={5275}
-            height={1866}
+            width={128}
+            height={56}
             className="h-16 w-auto"
           />
           <p className="max-w-xs text-sm text-muted-foreground">{t('tagline')}</p>

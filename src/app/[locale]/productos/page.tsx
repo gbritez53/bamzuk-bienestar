@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { listProducts } from '@/lib/dropea/products'
 import ProductGrid from '@/components/catalog/ProductGrid'
 import Pagination from '@/components/catalog/Pagination'
@@ -43,19 +44,24 @@ export default async function ProductosPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; search?: string; minPrice?: string; maxPrice?: string }>
 }) {
   const { locale } = await params
   const sp = await searchParams
   const currentPage = Math.max(1, Number(sp.page) || 1)
+  const search = sp.search || undefined
+  const minPrice = sp.minPrice ? Number(sp.minPrice) : undefined
+  const maxPrice = sp.maxPrice ? Number(sp.maxPrice) : undefined
   const t = await getTranslations({ locale, namespace: 'products' })
   const category = nichoConfig.category || undefined
-  const { items, total, lastPage } = await listProducts(currentPage, PAGE_SIZE, undefined, category, locale)
+  const { items, total, lastPage } = await listProducts(currentPage, PAGE_SIZE, undefined, category, locale, { search, minPrice, maxPrice })
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-10 md:flex-row">
-        <CatalogFilters locale={locale} />
+        <Suspense fallback={<div className="w-full shrink-0 md:w-64" />}>
+          <CatalogFilters locale={locale} />
+        </Suspense>
 
         <section className="min-w-0 flex-1">
           <div className="mb-8 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-end">

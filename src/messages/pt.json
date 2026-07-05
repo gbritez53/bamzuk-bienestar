@@ -33,20 +33,11 @@
     "next": "Próxima página"
   },
   "catalogFilters": {
-    "category": "Categoria",
-    "categoryOptions": {
-      "premiumFood": "Alimentação Premium",
-      "interactiveToys": "Brinquedos Interativos",
-      "bedsComfort": "Camas e Conforto",
-      "groomingKits": "Kits de Higiene"
-    },
+    "search": "Pesquisar",
+    "searchPlaceholder": "Pesquisa por nome…",
     "price": "Faixa de Preço",
-    "brand": "Marca",
-    "brandOptions": {
-      "wildpaw": "WildPaw",
-      "nutripet": "NutriPet",
-      "softbeds": "SoftBeds Co."
-    }
+    "priceMin": "Preço mínimo",
+    "priceMax": "Preço máximo"
   },
   "productDetail": {
     "breadcrumbHome": "Início",
@@ -58,7 +49,8 @@
     "noDescription": "Este produto ainda não tem descrição.",
     "weight": "Peso",
     "dimensions": "Dimensões",
-    "shippingUnavailable": "Não foi possível calcular o envio para este produto."
+    "shippingUnavailable": "Não foi possível calcular o envio para este produto.",
+    "relatedProducts": "Produtos Relacionados"
   },
   "cart": {
     "title": "A Tua Sacola de Compras",
@@ -74,7 +66,11 @@
     "deliveryCountry": "País de entrega",
     "promoCode": "Código Promocional",
     "promoCodePlaceholder": "Insere o teu código",
-    "promoCodeApply": "Aplicar"
+    "promoCodeApply": "Aplicar",
+    "addedToCart": "Produto adicionado ao carrinho",
+    "removedFromCart": "Produto removido do carrinho",
+    "quantityUpdated": "Quantidade atualizada",
+    "cartCleared": "Carrinho esvaziado"
   },
   "checkout": {
     "title": "Checkout",
@@ -98,7 +94,7 @@
     "confirmOrder": "Confirmar pedido"
   },
   "navigation": {
-    "shopAll": "Comprar Tudo",
+    "shopAll": "Produtos",
     "dogs": "Cães",
     "cats": "Gatos",
     "birds": "Aves",

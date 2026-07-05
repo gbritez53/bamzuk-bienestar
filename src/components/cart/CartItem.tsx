@@ -1,8 +1,10 @@
 'use client'
 
 import Image from 'next/image'
+import { toast } from 'sonner'
 import { useCartStore } from '@/hooks/useCart'
 import type { CartItem as CartItemType } from '@/lib/contracts'
+import { useTranslations } from 'next-intl'
 
 interface CartItemProps {
   item: CartItemType
@@ -12,6 +14,7 @@ interface CartItemProps {
 export default function CartItem({ item, locale }: CartItemProps) {
   const updateQuantity = useCartStore(s => s.updateQuantity)
   const removeItem = useCartStore(s => s.removeItem)
+  const t = useTranslations('cart')
 
   const price = (item.unitBasePrice / 100).toLocaleString(
     locale === 'pt' ? 'pt-PT' : 'es-ES',
@@ -50,9 +53,15 @@ export default function CartItem({ item, locale }: CartItemProps) {
         <div className="mt-auto flex items-center gap-2">
           <div className="flex items-center gap-1 rounded-full border border-border bg-muted px-1 py-0.5">
             <button
-              onClick={() =>
-                updateQuantity(item.productId, item.variantId, item.quantity - 1)
-              }
+              onClick={() => {
+                const newQty = item.quantity - 1
+                updateQuantity(item.productId, item.variantId, newQty)
+                if (newQty <= 0) {
+                  toast.error(t('removedFromCart'))
+                } else {
+                  toast(t('quantityUpdated'))
+                }
+              }}
               className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-primary transition-colors hover:bg-primary-light"
               aria-label="Disminuir cantidad"
             >
@@ -62,9 +71,10 @@ export default function CartItem({ item, locale }: CartItemProps) {
               {item.quantity}
             </span>
             <button
-              onClick={() =>
+              onClick={() => {
                 updateQuantity(item.productId, item.variantId, item.quantity + 1)
-              }
+                toast(t('quantityUpdated'))
+              }}
               className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-primary transition-colors hover:bg-primary-light"
               aria-label="Aumentar cantidad"
             >
@@ -72,7 +82,10 @@ export default function CartItem({ item, locale }: CartItemProps) {
             </button>
           </div>
           <button
-            onClick={() => removeItem(item.productId, item.variantId)}
+            onClick={() => {
+              removeItem(item.productId, item.variantId)
+              toast.error(t('removedFromCart'))
+            }}
             className="ml-auto cursor-pointer text-xs font-semibold text-destructive transition-colors hover:opacity-80"
             aria-label="Eliminar"
           >

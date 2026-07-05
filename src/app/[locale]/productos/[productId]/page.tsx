@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { getProductById } from '@/lib/dropea/products'
+import { getProductById, listProducts } from '@/lib/dropea/products'
 import ProductDetail from '@/components/product/ProductDetail'
 import { nichoConfig } from '../../../../../nicho.config'
 
@@ -63,6 +63,13 @@ export default async function ProductoPage({
     product.category.toLowerCase() !== nichoConfig.category.toLowerCase()
   if (outsideNicho || product.pvpr <= 0) notFound()
 
+  // Productos relacionados: misma categoría, excluyendo el actual (máx 2)
+  let relatedProducts: import('@/lib/dropea/types').Product[] = []
+  if (product.category) {
+    const relatedPage = await listProducts(1, 3, undefined, product.category, locale)
+    relatedProducts = relatedPage.items.filter(p => p.id !== product.id).slice(0, 2)
+  }
+
   const t = await getTranslations({ locale, namespace: 'productDetail' })
 
   const jsonLd = {
@@ -102,7 +109,7 @@ export default async function ProductoPage({
           </>
         )}
       </nav>
-      <ProductDetail product={product} locale={locale} />
+      <ProductDetail product={product} locale={locale} relatedProducts={relatedProducts} />
     </main>
   )
 }

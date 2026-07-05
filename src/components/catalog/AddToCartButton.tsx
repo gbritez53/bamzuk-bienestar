@@ -1,5 +1,6 @@
 'use client'
 
+import { toast } from 'sonner'
 import { useCartStore } from '@/hooks/useCart'
 import type { Product } from '@/lib/dropea/types'
 import { useTranslations } from 'next-intl'
@@ -12,6 +13,7 @@ interface AddToCartButtonProps {
 export default function AddToCartButton({ product, variantId }: AddToCartButtonProps) {
   const addItem = useCartStore(s => s.addItem)
   const t = useTranslations('products')
+  const tc = useTranslations('cart')
 
   function handleClick() {
     addItem({
@@ -30,6 +32,7 @@ export default function AddToCartButton({ product, variantId }: AddToCartButtonP
       imageUrl: product.images[0]?.url ?? null,
       quantity: 1,
     })
+    toast.success(tc('addedToCart'))
   }
 
   return (

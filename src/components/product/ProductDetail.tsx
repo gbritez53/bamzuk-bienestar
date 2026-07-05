@@ -6,17 +6,20 @@ import { useTranslations } from 'next-intl'
 import AddToCartButton from '@/components/catalog/AddToCartButton'
 import { Separator } from '@/components/ui/separator'
 import { calcularPesoEfectivo, calcularEnvio } from '@/lib/shipping'
+import Link from 'next/link'
 import type { Product } from '@/lib/dropea/types'
 
 interface ProductDetailProps {
   product: Product
   locale: string
+  relatedProducts?: Product[]
 }
 
-export default function ProductDetail({ product, locale }: ProductDetailProps) {
+export default function ProductDetail({ product, locale, relatedProducts = [] }: ProductDetailProps) {
   const t = useTranslations('productDetail')
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
-  const image = product.images[0]
+  const [selectedImageIdx, setSelectedImageIdx] = useState(0)
+  const image = product.images[selectedImageIdx] ?? product.images[0]
 
   const fmt = (eur: number) =>
     eur.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', {
@@ -74,6 +77,32 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
               </div>
             )}
           </div>
+
+          {/* Thumbnails */}
+          {product.images.length > 1 && (
+            <div className="mt-3 flex gap-2 overflow-x-auto">
+              {product.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setSelectedImageIdx(idx)}
+                  className={`relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-md border-2 transition-all ${
+                    idx === selectedImageIdx
+                      ? 'border-primary'
+                      : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <Image
+                    src={img.url}
+                    alt={img.alt || `${product.name} ${idx + 1}`}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Info */}
@@ -95,7 +124,7 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
           </div>
 
           {product.description && (
-            <p
+            <div
               className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
               dangerouslySetInnerHTML={{ __html: product.description.slice(0, 220) }}
             />
@@ -111,16 +140,20 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
                 <dt className="text-muted-foreground">SKU</dt>
                 <dd className="font-semibold text-foreground">{product.sku}</dd>
               </div>
-              <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
-                <dt className="text-muted-foreground">{t('weight')}</dt>
-                <dd className="font-semibold text-foreground">{product.weightKg} kg</dd>
-              </div>
-              <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0 sm:col-span-2">
-                <dt className="text-muted-foreground">{t('dimensions')}</dt>
-                <dd className="font-semibold text-foreground">
-                  {product.dimensions.length} × {product.dimensions.width} × {product.dimensions.height} cm
-                </dd>
-              </div>
+              {product.weightKg > 0 && (
+                <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
+                  <dt className="text-muted-foreground">{t('weight')}</dt>
+                  <dd className="font-semibold text-foreground">{product.weightKg} kg</dd>
+                </div>
+              )}
+              {product.dimensions.length > 0 && product.dimensions.width > 0 && product.dimensions.height > 0 && (
+                <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0 sm:col-span-2">
+                  <dt className="text-muted-foreground">{t('dimensions')}</dt>
+                  <dd className="font-semibold text-foreground">
+                    {product.dimensions.length} × {product.dimensions.width} × {product.dimensions.height} cm
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
 
@@ -180,7 +213,7 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
           </div>
         </div>
 
-        {/* Descripción completa — misma columna que la galería */}
+        {/* Descripción completa */}
         {product.description && (
           <div className="lg:col-span-7">
             <h2 className="mb-6 font-heading text-xl font-extrabold text-foreground">
@@ -190,6 +223,50 @@ export default function ProductDetail({ product, locale }: ProductDetailProps) {
               className="prose prose-sm text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
+          </div>
+        )}
+
+        {/* Productos relacionados — al lado de la descripción en desktop */}
+        {relatedProducts.length > 0 && (
+          <div className="lg:col-span-5">
+            <h3 className="mb-5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              {t('relatedProducts')}
+            </h3>
+            <div className="flex flex-col gap-4">
+              {relatedProducts.map(rp => (
+                <Link
+                  key={rp.id}
+                  href={`/${locale}/productos/${rp.id}`}
+                  className="group flex items-start gap-4 rounded-lg bg-card p-3 shadow-[var(--shadow-sm)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
+                >
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
+                    {rp.images[0] ? (
+                      <Image
+                        src={rp.images[0].url}
+                        alt={rp.images[0].alt || rp.name}
+                        fill
+                        sizes="80px"
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="h-6 w-6 text-muted-foreground/30">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.41a2.25 2.25 0 0 1 3.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <p className="line-clamp-2 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                      {rp.name}
+                    </p>
+                    <p className="text-xs font-bold text-primary">
+                      {rp.pvpr.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', { style: 'currency', currency: 'EUR' })}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </div>
