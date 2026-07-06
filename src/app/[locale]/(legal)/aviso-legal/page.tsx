@@ -51,10 +51,9 @@ export default async function AvisoLegalPage({ params }: PageProps) {
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li><strong>Titular:</strong> {nichoConfig.name}</li>
-            <li><strong>NIF/CIF:</strong> [Pendente de registo]</li>
-            <li><strong>Endereço:</strong> [Endereço do titular]</li>
-            <li><strong>E-mail:</strong> [E-mail de contacto]</li>
-            <li><strong>Telefone:</strong> [Telefone de contacto]</li>
+            <li><strong>Endereço:</strong> Calle la Iglesia 36, Palazuelo, 49213 Fariza, Zamora</li>
+            <li><strong>E-mail:</strong> info@bamzuk.com</li>
+            <li><strong>Telefone:</strong> 602057976</li>
           </ul>
 
           <h2 className="text-lg font-semibold text-gray-900">Propriedade Intelectual</h2>
@@ -81,10 +80,9 @@ export default async function AvisoLegalPage({ params }: PageProps) {
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li><strong>Titular:</strong> {nichoConfig.name}</li>
-            <li><strong>NIF/CIF:</strong> [Pendiente de registro]</li>
-            <li><strong>Dirección:</strong> [Dirección del titular]</li>
-            <li><strong>Correo electrónico:</strong> [Email de contacto]</li>
-            <li><strong>Teléfono:</strong> [Teléfono de contacto]</li>
+            <li><strong>Dirección:</strong> Calle la Iglesia 36, Palazuelo, 49213 Fariza, Zamora</li>
+            <li><strong>Correo electrónico:</strong> info@bamzuk.com</li>
+            <li><strong>Teléfono:</strong> 602057976</li>
           </ul>
 
           <h2 className="text-lg font-semibold text-gray-900">Propiedad Intelectual</h2>
