@@ -35,7 +35,7 @@ export default function Pagination({
           <Link
             href={`${basePath}?page=${currentPage - 1}`}
             aria-label={t('prev')}
-            className="flex h-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
+            className="flex h-9 cursor-pointer items-center justify-center rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@ export default function Pagination({
             </svg>
           </Link>
         ) : (
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted/30 text-sm text-muted-foreground/50">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground/50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -82,7 +82,7 @@ export default function Pagination({
             <Link
               key={pageNum}
               href={`${basePath}?page=${pageNum}`}
-              className={`flex h-9 min-w-[2.25rem] cursor-pointer items-center justify-center rounded-lg px-2 text-sm font-medium transition-all ${
+              className={`flex h-9 min-w-[2.25rem] cursor-pointer items-center justify-center rounded-xl px-2 text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
                   : 'border border-border bg-card text-foreground hover:border-primary/50 hover:text-primary'
@@ -98,7 +98,7 @@ export default function Pagination({
           <Link
             href={`${basePath}?page=${currentPage + 1}`}
             aria-label={t('next')}
-            className="flex h-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
+            className="flex h-9 cursor-pointer items-center justify-center rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary/50 hover:text-primary"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +112,7 @@ export default function Pagination({
             </svg>
           </Link>
         ) : (
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted/30 text-sm text-muted-foreground/50">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground/50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

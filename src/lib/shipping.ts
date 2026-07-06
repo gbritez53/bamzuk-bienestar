@@ -232,8 +232,27 @@ export function calcularPesoEfectivo(items: ItemWithDimensions[]): number | null
  * Si el threshold es 0 o no está seteado → nunca gratis.
  */
 export function esEnvioGratis(subtotalEur: number): boolean {
-  const raw = process.env['NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD']
-  const threshold = Number(raw ?? 0)
+  const threshold = getFreeShippingThreshold()
   if (threshold <= 0) return false
   return subtotalEur >= threshold
+}
+
+/**
+ * Devuelve el umbral de envío gratis configurado (NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD).
+ * Si no está seteado o es inválido → 0 (equivalente a "nunca gratis").
+ */
+export function getFreeShippingThreshold(): number {
+  const raw = process.env['NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD']
+  const threshold = Number(raw ?? 0)
+  return Number.isFinite(threshold) && threshold > 0 ? threshold : 0
+}
+
+/**
+ * Cuánto falta (en €) para alcanzar el envío gratis dado un subtotal.
+ * Nunca negativo. Si el threshold no está configurado (<=0) → 0.
+ */
+export function getRemainingForFreeShipping(subtotalEur: number): number {
+  const threshold = getFreeShippingThreshold()
+  if (threshold <= 0) return 0
+  return Math.max(0, threshold - subtotalEur)
 }

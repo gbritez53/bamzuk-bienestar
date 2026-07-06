@@ -33,6 +33,30 @@ function isSellable(p: Product): boolean {
 }
 
 /**
+ * `NICHO_CATEGORY` acepta una o varias categorías separadas por coma
+ * (verificado contra la API viva de Dropea 2026-07-06: no existe una
+ * categoría combinada única, ej. "Salud y cuidado personal, belleza" son
+ * en realidad 2 categorías reales separadas — "Belleza" y "Salud y
+ * cuidado personal"). Normaliza a una lista trim + lowercase.
+ */
+function parseCategoryList(category: string): string[] {
+  return category
+    .split(',')
+    .map(c => c.trim().toLowerCase())
+    .filter(Boolean)
+}
+
+/**
+ * true si `productCategory` coincide (case-insensitive) con alguna de las
+ * categorías configuradas en `configuredCategory` (lista separada por
+ * coma). `configuredCategory` vacío = sin filtro, siempre coincide.
+ */
+export function categoryMatches(productCategory: string, configuredCategory: string): boolean {
+  if (!configuredCategory) return true
+  return parseCategoryList(configuredCategory).includes(productCategory.trim().toLowerCase())
+}
+
+/**
  * Fetch de una página de Dropea. Extraída para poder llamarla en paralelo.
  */
 async function fetchPage(page: number, limit: number, sort?: string): Promise<PageResult> {
@@ -63,12 +87,11 @@ async function scanCatalogByCategory(category: string, sort?: string): Promise<P
     allPages.push(...(await Promise.all(batch)))
   }
 
-  const wanted = category.toLowerCase()
   const allProducts: Product[] = []
   for (const page of allPages) {
     const filtered = page.data
       .map(mapDropeaProduct)
-      .filter(p => isSellable(p) && p.category.toLowerCase() === wanted)
+      .filter(p => isSellable(p) && categoryMatches(p.category, category))
     allProducts.push(...filtered)
   }
 

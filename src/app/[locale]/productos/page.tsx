@@ -74,9 +74,19 @@ export default async function ProductosPage({
               </h1>
             </div>
             {category && (
-              <span className="rounded-full bg-primary-light px-3.5 py-1 text-xs font-semibold text-primary">
-                {category}
-              </span>
+              <div className="flex flex-wrap gap-2">
+                {/* nichoConfig.category acepta lista separada por coma
+                    (ver categoryMatches en lib/dropea/products) — cada
+                    categoría configurada se muestra como su propia pill */}
+                {category.split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                  <span
+                    key={c}
+                    className="rounded-full bg-primary-light px-3.5 py-1 text-xs font-semibold text-primary"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
             )}
           </div>
 

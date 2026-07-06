@@ -49,9 +49,9 @@ beforeEach(() => {
 describe('Header', () => {
   it('renders the logo with the site name as alt text', () => {
     render(<Header />)
-    const logo = screen.getByAltText('Bamzuk Mascotas')
+    const logo = screen.getByAltText('Bamzuk Bienestar')
     expect(logo).toBeInTheDocument()
-    expect(logo).toHaveAttribute('src', '/logo-hz.png')
+    expect(logo).toHaveAttribute('src', '/logo.png')
   })
 
   it('has a link to the products page with locale prefix', () => {

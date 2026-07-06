@@ -1,4 +1,4 @@
-# Skill Registry — bamzuk-mascotas
+# Skill Registry — bamzuk-bienestar
 
 ## Project Skills
 

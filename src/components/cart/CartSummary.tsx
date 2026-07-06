@@ -28,7 +28,7 @@ export default function CartSummary({
   const totalEur = subtotalEur + (isFreeShipping ? 0 : shippingEur)
 
   return (
-    <div className="rounded-lg bg-card p-6 shadow-[var(--shadow-lg)]">
+    <div className="rounded-xl bg-card p-6 shadow-[var(--shadow-lg)]">
       <h2 className="mb-5 font-heading text-xl font-bold text-foreground">
         {t('summaryTitle')}
       </h2>

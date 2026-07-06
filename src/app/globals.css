@@ -1,32 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  /* Nicho theme — Bamzuk Mascotas (tienda de mascotas, tema claro) */
-  --background: #f9f6f0; /* tertiary off-white — fondo general */
-  --foreground: #2d3436; /* secondary charcoal — texto principal */
+  /* Nicho theme — Bamzuk Bienestar (skincare/wellness, "Minimalist Apothecary" verde) */
+  --background: #f5fbf0; /* surface — fondo general */
+  --foreground: #171d17; /* on-surface — texto principal */
 
-  /* Primary = el dorado oscuro del logo, usado como color de TEXTO/estado
-     activo (enlaces, precios, iconos, botones sólidos). El amarillo brillante
-     de marca (#F6CF65) se usa como "primary-light": fondos, hero, badges,
-     pills — nunca como color de texto porque no cumple contraste WCAG. */
-  --primary: #755b00;
+  /* Primary = verde apothecary, usado como color de TEXTO/estado
+     activo (enlaces, precios, iconos, botones sólidos). */
+  --primary: #1d6d00;
   --primary-foreground: #ffffff;
-  --primary-hover: #5c4700;
-  --primary-light: #f6cf65;
+  --primary-hover: #145200;
+  --primary-light: #d1e6cb;
 
-  /* Secondary = charcoal, para acentos de alto contraste (bordes, iconos) */
-  --secondary: #2d3436;
+  /* Secondary = sage oscuro, para acentos de alto contraste (bordes, iconos) */
+  --secondary: #51634e;
   --secondary-foreground: #ffffff;
-  --secondary-hover: #1e2426;
-  --secondary-light: #e7e5df;
+  --secondary-hover: #394b38;
+  --secondary-light: #dee4da;
 
   /* Accent = superficie blanca pura para cards/containers "flotantes" */
   --accent: #ffffff;
-  --accent-foreground: #2d3436;
+  --accent-foreground: #171d17;
 
   /* Neutral (DESIGN.md) → muted-foreground: texto secundario / disabled */
-  --muted: #f1eee6;
-  --muted-foreground: #636e72;
+  --muted: #eaf0e5;
+  --muted-foreground: #40493b;
 
   --success: #10b981;
   --success-light: #d1fae5;
@@ -34,18 +32,19 @@
   --destructive: #ba1a1a;
   --destructive-light: #ffdad6;
 
-  --border: #e5e1d5;
+  --border: #c0cab6;
   --card: #ffffff;
-  --card-foreground: #2d3436;
+  --card-foreground: #171d17;
 
-  --radius: 0.5rem; /* botones / inputs */
-  --radius-lg: 1rem; /* cards / banners */
+  --radius: 0.25rem; /* botones / inputs */
+  --radius-lg: 0.5rem; /* inputs pequeños / checkboxes */
+  --radius-xl: 0.75rem; /* botones / cards / info-strips */
 
-  --header-bg: rgba(249, 246, 240, 0.85);
-  /* Sombras suaves con tinte amarillo cálido (DESIGN.md — Elevation) */
-  --shadow-sm: 0 1px 2px 0 rgba(246, 207, 101, 0.08);
-  --shadow-md: 0px 4px 12px rgba(246, 207, 101, 0.12);
-  --shadow-lg: 0px 10px 25px rgba(246, 207, 101, 0.15);
+  --header-bg: rgba(245, 251, 240, 0.85);
+  /* Sombras suaves con tinte verde apothecary (DESIGN.md — Elevation) */
+  --shadow-sm: 0 1px 2px 0 rgba(29, 109, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(29, 109, 0, 0.08);
+  --shadow-lg: 0 10px 25px -5px rgba(29, 109, 0, 0.1);
 }
 
 @theme inline {
@@ -75,14 +74,15 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
-  /* Plus Jakarta Sans para headings/precios, Be Vietnam Pro para body
-     (variables reales seteadas por next/font/google en src/app/layout.tsx) */
-  --font-sans: var(--font-body-sans);
+  /* Plus Jakarta Sans única familia (headings, precios y body)
+     (variable real seteada por next/font/google en src/app/layout.tsx) */
+  --font-sans: var(--font-heading-sans);
   --font-heading: var(--font-heading-sans);
   --font-mono: var(--font-geist-mono);
 
   --radius: var(--radius);
   --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
 }
 
 body {
@@ -120,4 +120,13 @@ body {
 
 .animate-slide-up {
   animation: slide-up 0.4s ease-out;
+}
+
+/* Home hero background wash (B3 — Minimalist Apothecary, sin fotografía) */
+.hero-gradient {
+  background: linear-gradient(
+    to right,
+    rgba(245, 251, 240, 0.95) 30%,
+    rgba(245, 251, 240, 0) 100%
+  );
 }

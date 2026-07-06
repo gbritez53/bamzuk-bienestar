@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { getProductById, listProducts } from '@/lib/dropea/products'
+import { getProductById, listProducts, categoryMatches } from '@/lib/dropea/products'
 import ProductDetail from '@/components/product/ProductDetail'
 import { nichoConfig } from '../../../../../nicho.config'
 
@@ -57,17 +57,19 @@ export default async function ProductoPage({
   const product = await getProductById(id, locale)
   if (!product) notFound()
   // Productos fuera del nicho o sin precio de venta (pvpr=0) no existen
-  // para esta tienda, ni siquiera por URL directa
-  const outsideNicho =
-    nichoConfig.category &&
-    product.category.toLowerCase() !== nichoConfig.category.toLowerCase()
+  // para esta tienda, ni siquiera por URL directa.
+  // `nichoConfig.category` puede ser una lista separada por coma (ver
+  // categoryMatches en lib/dropea/products) — no una igualdad exacta.
+  const outsideNicho = !categoryMatches(product.category, nichoConfig.category)
   if (outsideNicho || product.pvpr <= 0) notFound()
 
-  // Productos relacionados: misma categoría, excluyendo el actual (máx 2)
+  // Productos relacionados: misma categoría, excluyendo el actual (máx 4 —
+  // "Completa tu Rutina", ver spec product-detail). Se piden 5 para
+  // garantizar 4 tras excluir el producto actual (si Dropea lo incluyera).
   let relatedProducts: import('@/lib/dropea/types').Product[] = []
   if (product.category) {
-    const relatedPage = await listProducts(1, 3, undefined, product.category, locale)
-    relatedProducts = relatedPage.items.filter(p => p.id !== product.id).slice(0, 2)
+    const relatedPage = await listProducts(1, 5, undefined, product.category, locale)
+    relatedProducts = relatedPage.items.filter(p => p.id !== product.id).slice(0, 4)
   }
 
   const t = await getTranslations({ locale, namespace: 'productDetail' })

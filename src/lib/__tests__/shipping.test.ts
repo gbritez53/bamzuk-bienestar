@@ -5,6 +5,8 @@ import {
   calcularPesoVolumetrico,
   calcularPesoEfectivo,
   esEnvioGratis,
+  getFreeShippingThreshold,
+  getRemainingForFreeShipping,
   getZoneFromCountry,
   getZoneLabel,
   FALLBACK_RATE_EUR,
@@ -393,5 +395,74 @@ describe('esEnvioGratis', () => {
   it('threshold 50, subtotal 100 → true', () => {
     vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '50')
     expect(esEnvioGratis(100)).toBe(true)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────────
+// getFreeShippingThreshold
+// ────────────────────────────────────────────────────────────────────────────────
+
+describe('getFreeShippingThreshold', () => {
+  beforeEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('no seteado → 0', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '')
+    expect(getFreeShippingThreshold()).toBe(0)
+  })
+
+  it('seteado a 0 → 0', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '0')
+    expect(getFreeShippingThreshold()).toBe(0)
+  })
+
+  it('seteado a un valor positivo → ese valor numérico', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '50')
+    expect(getFreeShippingThreshold()).toBe(50)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────────
+// getRemainingForFreeShipping
+// ────────────────────────────────────────────────────────────────────────────────
+
+describe('getRemainingForFreeShipping', () => {
+  beforeEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('threshold no configurado (0) → 0 sin importar el subtotal', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '0')
+    expect(getRemainingForFreeShipping(0)).toBe(0)
+    expect(getRemainingForFreeShipping(30)).toBe(0)
+  })
+
+  it('subtotal por debajo del threshold → diferencia exacta', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '50')
+    expect(getRemainingForFreeShipping(30)).toBe(20)
+  })
+
+  it('subtotal 0 y threshold configurado → threshold completo', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '50')
+    expect(getRemainingForFreeShipping(0)).toBe(50)
+  })
+
+  it('subtotal igual al threshold → 0 (no negativo)', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '50')
+    expect(getRemainingForFreeShipping(50)).toBe(0)
+  })
+
+  it('subtotal por encima del threshold → 0 (nunca negativo)', () => {
+    vi.stubEnv('NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD', '50')
+    expect(getRemainingForFreeShipping(75)).toBe(0)
   })
 })

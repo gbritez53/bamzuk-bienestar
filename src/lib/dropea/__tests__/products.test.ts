@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { GraphQLClient } from 'graphql-request'
 import { __setDropeaClient } from '@/lib/dropea/client'
+import { categoryMatches } from '@/lib/dropea/products'
 
 // Usamos un mock object en vez de mockear el constructor — más simple y robusto
 const mockRequest = vi.fn()
@@ -170,6 +171,49 @@ describe('listProducts', () => {
     await listProducts(1, 40, undefined, 'Mascotas')
     await listProducts(2, 40, undefined, 'Mascotas')
     expect(mockRequest).toHaveBeenCalledTimes(1)
+  })
+
+  it('filtra por múltiples categorías separadas por coma (Dropea no expone una categoría combinada)', async () => {
+    // Descubierto verificando la API viva 2026-07-06: "Salud y cuidado
+    // personal, belleza" NO existe como categoría única — son 2 categorías
+    // reales separadas por coma en NICHO_CATEGORY.
+    const belleza = { ...rawProduct, id: '1', category: 'Belleza', state: 'PUBLIC' }
+    const salud = { ...rawProduct, id: '2', category: 'Salud y cuidado personal', state: 'PUBLIC' }
+    const hogar = { ...rawProduct, id: '3', category: 'Hogar', state: 'PUBLIC' }
+    mockRequest.mockResolvedValue({
+      products: {
+        data: [belleza, salud, hogar],
+        total: 3,
+        current_page: 1,
+        last_page: 1,
+        per_page: 100,
+      },
+    })
+    const { listProducts } = await import('@/lib/dropea/products')
+    const result = await listProducts(1, 40, undefined, 'Salud y cuidado personal,Belleza')
+    expect(result.items.map(p => p.id).sort()).toEqual(['1', '2'])
+    expect(result.total).toBe(2)
+  })
+})
+
+describe('categoryMatches', () => {
+  it('devuelve true si no hay categoría configurada (sin filtro)', () => {
+    expect(categoryMatches('Cualquiera', '')).toBe(true)
+  })
+
+  it('coincide exacta case-insensitive con una única categoría configurada', () => {
+    expect(categoryMatches('belleza', 'Belleza')).toBe(true)
+    expect(categoryMatches('Hogar', 'Belleza')).toBe(false)
+  })
+
+  it('coincide con cualquiera de varias categorías separadas por coma', () => {
+    expect(categoryMatches('Belleza', 'Salud y cuidado personal,Belleza')).toBe(true)
+    expect(categoryMatches('Salud y cuidado personal', 'Salud y cuidado personal,Belleza')).toBe(true)
+    expect(categoryMatches('Hogar', 'Salud y cuidado personal,Belleza')).toBe(false)
+  })
+
+  it('ignora espacios extra alrededor de cada categoría en la lista', () => {
+    expect(categoryMatches('Belleza', 'Salud y cuidado personal , Belleza ')).toBe(true)
   })
 })
 

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nuestra Colección de Bienestar | Bamzuk Bienestar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .product-card:hover .add-button {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .filter-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#d1e6cb",
+                        "surface-variant": "#dee4da",
+                        "primary-fixed": "#a1f87f",
+                        "on-secondary-fixed": "#0f1f0f",
+                        "surface-container-low": "#f0f5eb",
+                        "surface-tint": "#1d6d00",
+                        "secondary-fixed-dim": "#b8ccb3",
+                        "inverse-surface": "#2c322b",
+                        "background": "#f5fbf0",
+                        "on-tertiary-container": "#383c39",
+                        "surface-container-highest": "#dee4da",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#86db66",
+                        "surface-container-high": "#e4eadf",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4c7c3",
+                        "surface-container": "#eaf0e5",
+                        "inverse-on-surface": "#edf3e8",
+                        "surface-bright": "#f5fbf0",
+                        "tertiary-fixed": "#e0e3df",
+                        "on-surface": "#171d17",
+                        "on-error": "#ffffff",
+                        "surface": "#f5fbf0",
+                        "primary": "#1d6d00",
+                        "on-secondary-container": "#556852",
+                        "secondary": "#51634e",
+                        "inverse-primary": "#86db66",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#a3a7a3",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d6dcd2",
+                        "outline-variant": "#c0cab6",
+                        "tertiary": "#5b5f5c",
+                        "on-primary-fixed": "#042100",
+                        "primary-container": "#66b949",
+                        "on-surface-variant": "#40493b",
+                        "on-tertiary-fixed-variant": "#444844",
+                        "on-primary-fixed-variant": "#145200",
+                        "secondary-fixed": "#d3e8ce",
+                        "on-secondary-fixed-variant": "#394b38",
+                        "on-background": "#171d17",
+                        "on-tertiary-fixed": "#191c1a",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#0f4600",
+                        "outline": "#707a69",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "lg": "48px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "xl": "80px",
+                        "margin-mobile": "16px",
+                        "base": "8px"
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "button": ["16px", {"lineHeight": "20px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-background dark:bg-background">
+<div class="flex justify-between items-center max-w-[1280px] mx-auto px-margin-desktop py-md">
+<div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed tracking-tight">
+                Bamzuk Bienestar
+            </div>
+<nav class="hidden md:flex items-center space-x-gutter">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors duration-200" href="#">Cremas</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-sm text-body-sm" href="#">Suplementos</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors duration-200" href="#">Cuidado Personal</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors duration-200" href="#">Sobre Nosotros</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="p-xs text-primary transition-transform active:scale-95">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow max-w-[1280px] mx-auto w-full px-margin-desktop py-xl">
+<!-- Header Section -->
+<header class="mb-xl text-center md:text-left">
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-sm">Nuestra Colección de Bienestar</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Descubre una selección curada de productos esenciales para tu ritual de cuidado diario, diseñados con pureza clínica y alma orgánica.</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-xl">
+<!-- Filters Sidebar -->
+<aside class="md:col-span-3 space-y-lg">
+<div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-md uppercase tracking-wider">Categorías</h3>
+<div class="space-y-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Cuidado Facial</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Cuerpo</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-body-md text-primary font-bold">Nutrición</span>
+</label>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-md uppercase tracking-wider">Rango de Precio</h3>
+<div class="px-xs">
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="200" min="0" type="range" value="100"/>
+<div class="flex justify-between mt-sm text-body-sm font-body-sm text-on-surface-variant">
+<span>$0</span>
+<span>$200+</span>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-md uppercase tracking-wider">Marca</h3>
+<div class="space-y-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="border-outline-variant text-primary focus:ring-primary w-5 h-5" name="brand" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Botanical Labs</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="border-outline-variant text-primary focus:ring-primary w-5 h-5" name="brand" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Pure Origins</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="border-outline-variant text-primary focus:ring-primary w-5 h-5" name="brand" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">Bamzuk Essence</span>
+</label>
+</div>
+</div>
+</aside>
+<!-- Product Grid -->
+<div class="md:col-span-9">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Product 1 -->
+<article class="product-card group flex flex-col transition-all duration-300 hover:scale-[1.02]">
+<div class="relative aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-md shadow-sm group-hover:shadow-lg transition-shadow">
+<img class="w-full h-full object-cover" data-alt="A high-end editorial shot of a minimalist frosted glass bottle containing a translucent facial serum, set against a warm off-white background with soft organic shadows. The lighting is bright and airy, reflecting a clean apothecary aesthetic with soft green accents. Minimalist branding is visible on the label." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd8qkC3oUJRnQ__lY7tspkh8jyokzCxCSv4-zbbWLRNyTy-vHomnS4OQpMEEyKtpquh9mfRO8GHkAnspzABi9AwmRMHYZ9h8xgrPBck_bCDte9JwO6yu7GCCGbFx3bqeVWIT4DmEY4hkfqILgDDUuBmxp4loUeoOjc7T2zlLjkYyL2OvpNcsoV6oO4TiiJDpaQzV-2SSCbpyARx6dVDnauCy8vOGCA2jRsVz5MqKGHoONQ6d8N1tU"/>
+<button class="add-button absolute bottom-md left-md right-md bg-primary text-on-primary py-sm px-md rounded-xl font-button text-button opacity-0 translate-y-2 transition-all duration-300 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                                Añadir
+                            </button>
+<div class="absolute top-sm right-sm">
+<span class="bg-secondary-container text-on-secondary-container font-label-caps text-label-caps px-sm py-1 rounded-full">ORGÁNICO</span>
+</div>
+</div>
+<h2 class="font-headline-md text-[18px] text-on-surface mb-xs">Sérum de Resplandor Botanical</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Nutrición profunda para pieles sensibles.</p>
+<p class="font-headline-md text-headline-md text-primary mt-auto">$45.00</p>
+</article>
+<!-- Product 2 -->
+<article class="product-card group flex flex-col transition-all duration-300 hover:scale-[1.02]">
+<div class="relative aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-md shadow-sm group-hover:shadow-lg transition-shadow">
+<img class="w-full h-full object-cover" data-alt="Minimalist white ceramic jar of luxury body cream on a textured stone surface. The scene is illuminated by natural afternoon sunlight creating long, soft shadows. The overall mood is peaceful and high-end, using a palette of sage greens and warm whites consistent with a minimalist apothecary style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ4pDsK5jnyPql0W8hd_zS4vf6c4aaZ-UxOm1vbXXCCVeQD51tEnDmhm-eVzW4u1X8Pwv-hpiaksLRPgvV57BTU4qHY-CY9vcCOPi8xx6ChDldwMaXgwLRD2_M7h3GLn0KVcN1GX_RwMrEVqNhtwiaPXbMbb0kW5lyT6JGFRkBKagN613WSMtux-1TlDgAeWWrLxaVj6JXIXzv6YGmFTiuYdoXp12suboLTYUwzvdZ96ofhEPV1FA"/>
+<button class="add-button absolute bottom-md left-md right-md bg-primary text-on-primary py-sm px-md rounded-xl font-button text-button opacity-0 translate-y-2 transition-all duration-300 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                                Añadir
+                            </button>
+</div>
+<h2 class="font-headline-md text-[18px] text-on-surface mb-xs">Crema Corporal de Lavanda</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Hidratación 24h con aceites esenciales.</p>
+<p class="font-headline-md text-headline-md text-primary mt-auto">$32.00</p>
+</article>
+<!-- Product 3 -->
+<article class="product-card group flex flex-col transition-all duration-300 hover:scale-[1.02]">
+<div class="relative aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-md shadow-sm group-hover:shadow-lg transition-shadow">
+<img class="w-full h-full object-cover" data-alt="Close-up of elegant amber glass vitamins bottle on a clean wooden tray. Soft lighting highlights the golden contents and the minimalist label. The background is a blurred garden scene, reinforcing the organic and clinical wellness theme. Subtle green tones permeate the composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL9Z1UBBI9i64eXaQZSFCqMWO2wM0WSmV3Fqlyjx3TJWFgIVN9qf8mJney-crciY6C3cRrg_VAiof2aOf8lb8LBHYG5KByI67CYUQwKD4Z3kwob7KgXgP9lHMTnMhSgg7LmAQ3ucgUQBAOFYCITH3KQz_B4P0RwYikoHqqCWZPoBUrbMze0_ggsQTQ04DWYVHvi09OeYlB41c0JFMzNDpA_fLT4dhHbI5CrDsVes3ZhHPddrlYyp8"/>
+<button class="add-button absolute bottom-md left-md right-md bg-primary text-on-primary py-sm px-md rounded-xl font-button text-button opacity-0 translate-y-2 transition-all duration-300 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                                Añadir
+                            </button>
+<div class="absolute top-sm right-sm">
+<span class="bg-primary-container text-on-primary-container font-label-caps text-label-caps px-sm py-1 rounded-full">POPULAR</span>
+</div>
+</div>
+<h2 class="font-headline-md text-[18px] text-on-surface mb-xs">Complejo Vitamínico B+</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Energía natural para tu ritmo diario.</p>
+<p class="font-headline-md text-headline-md text-primary mt-auto">$58.00</p>
+</article>
+<!-- Product 4 -->
+<article class="product-card group flex flex-col transition-all duration-300 hover:scale-[1.02]">
+<div class="relative aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-md shadow-sm group-hover:shadow-lg transition-shadow">
+<img class="w-full h-full object-cover" data-alt="A clean, clinical presentation of a powdered supplement in a minimalist pouch. The pouch is matte white with sage green typography. Some of the fine powder is artfully scattered on a marble surface next to a wooden spoon. High-key lighting and a spacious, airy composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJpiL9N5UQPrnhf-QBEGh6Ujw30QXclyvq4U-CGOuBC1kfnQeQsY72O3eX6U8O7gQ27yhgoWqE-pHn6oD3lRVLGMAXIYf3AQHJkrg0slL_OH1MnHRKBW3jffBNcdkm62LfNx1Ibxz81c-GgXmg1Gykm1nbfvTrIvaCz5YP3WOP866GDXv0zuU8O71rI5ntLpjbYqvEHb85Nyn4W6eEbX7v5hakJrqfnQ3PU2qvgSPzk711bmC4hF0"/>
+<button class="add-button absolute bottom-md left-md right-md bg-primary text-on-primary py-sm px-md rounded-xl font-button text-button opacity-0 translate-y-2 transition-all duration-300 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                                Añadir
+                            </button>
+</div>
+<h2 class="font-headline-md text-[18px] text-on-surface mb-xs">Proteína Vegana de Vainilla</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Fórmula pura sin aditivos artificiales.</p>
+<p class="font-headline-md text-headline-md text-primary mt-auto">$49.00</p>
+</article>
+<!-- Product 5 -->
+<article class="product-card group flex flex-col transition-all duration-300 hover:scale-[1.02]">
+<div class="relative aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-md shadow-sm group-hover:shadow-lg transition-shadow">
+<img class="w-full h-full object-cover" data-alt="Luxury essential oil dropper bottle positioned centrally on a reflective water surface with soft ripples. The colors are deep forest greens and pale greys. The lighting creates a serene, spa-like atmosphere that emphasizes clarity, tranquility, and high-end wellness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACS_ykifswwVIiAnRFI9ES2HTc1JisIJGs4gbxEOCd-fPBh-VgP-uelfWsyEPiWIoydnaUIQx8X4l5KgAXhN0pNU-DUjwm8THiR6Vl0a0DebSHuTVFosQRxah2tIuf1T7gASdXS2IZ7Abbyger5uRj87qzotNPDTiCf3w1y33rYtnjBsaBGDiia78g-gziMSR_wFgkFNo-XJOY7O5k23wMZRVKWPSBU-Iu-BI_KRwgjSXmPWZCVcY"/>
+<button class="add-button absolute bottom-md left-md right-md bg-primary text-on-primary py-sm px-md rounded-xl font-button text-button opacity-0 translate-y-2 transition-all duration-300 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                                Añadir
+                            </button>
+<div class="absolute top-sm right-sm">
+<span class="bg-surface-variant text-on-surface-variant font-label-caps text-label-caps px-sm py-1 rounded-full">NUEVO</span>
+</div>
+</div>
+<h2 class="font-headline-md text-[18px] text-on-surface mb-xs">Aceite Reparador Nocturno</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Restauración intensiva mientras duermes.</p>
+<p class="font-headline-md text-headline-md text-primary mt-auto">$62.00</p>
+</article>
+<!-- Product 6 -->
+<article class="product-card group flex flex-col transition-all duration-300 hover:scale-[1.02]">
+<div class="relative aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-md shadow-sm group-hover:shadow-lg transition-shadow">
+<img class="w-full h-full object-cover" data-alt="Minimalist collection of bamboo toothbrush and organic toothpaste tube on a clean white countertop. Soft greenery in the background creates a natural, sustainable feel. The lighting is diffused and bright, following the minimalist apothecary aesthetic of Bamzuk Bienestar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJO9UNMIUnr7Nx4kkKhu28RcYn6JTOggKOLRm0P1_OZLhxcoEWJpb-L6VCI4ekYvHPYDAcAjxi-How-GL9iFJLU3k82aqhXfph68zcCBieoKHfDCG_aNPqfohWP7I2-g5xnmXKPh3XpxqEYIQ3FNHp_PJLHfYq_ZdwK14zaQJwz4_gbXLl0pmVdYSKihRJkzbSKz4Qsr5SaWkA55ofZW32uHO114Pe6FI5l3CGs5Bv-0gj0XYAs2A"/>
+<button class="add-button absolute bottom-md left-md right-md bg-primary text-on-primary py-sm px-md rounded-xl font-button text-button opacity-0 translate-y-2 transition-all duration-300 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                                Añadir
+                            </button>
+</div>
+<h2 class="font-headline-md text-[18px] text-on-surface mb-xs">Kit Dental Biodegradable</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Cuidado diario consciente y sostenible.</p>
+<p class="font-headline-md text-headline-md text-primary mt-auto">$18.00</p>
+</article>
+</div>
+<!-- Pagination -->
+<div class="mt-xl flex justify-center items-center gap-md">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<span class="font-body-md text-body-md text-on-surface">Página 1 de 4</span>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-low dark:bg-surface-container-low">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-[1280px] mx-auto px-margin-desktop py-xl">
+<div class="flex flex-col gap-sm">
+<div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">
+                    Bamzuk Bienestar
+                </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pr-md">
+                    Tu destino premium para productos de bienestar que combinan la ciencia moderna con la sabiduría de la naturaleza.
+                </p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-caps text-label-caps text-on-surface uppercase tracking-widest mb-xs">Explorar</h4>
+<div class="flex flex-col gap-xs">
+<a class="text-on-surface-variant hover:text-primary font-body-sm text-body-sm transition-colors duration-200" href="#">Información de Envío</a>
+<a class="text-on-surface-variant hover:text-primary font-body-sm text-body-sm transition-colors duration-200" href="#">Política de Privacidad</a>
+<a class="text-on-surface-variant hover:text-primary font-body-sm text-body-sm transition-colors duration-200" href="#">Suscripción al Newsletter</a>
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-caps text-label-caps text-on-surface uppercase tracking-widest mb-xs">Newsletter</h4>
+<div class="flex gap-xs">
+<input class="flex-grow bg-background border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none" placeholder="Tu email" type="email"/>
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg font-button text-button hover:bg-opacity-90 transition-all active:scale-95">Unirse</button>
+</div>
+<p class="text-[12px] text-on-surface-variant mt-xs">© 2024 Bamzuk Bienestar. Todos los derechos reservados.</p>
+</div>
+</div>
+</footer>
+<!-- FAB for Support (Contextual) -->
+<button class="fixed bottom-md right-md w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90 z-40">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<script>
+        // Micro-interactions for buttons
+        document.querySelectorAll('.add-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const originalContent = button.innerHTML;
+                button.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span>';
+                button.classList.add('bg-secondary');
+                
+                setTimeout(() => {
+                    button.innerHTML = '<span class="material-symbols-outlined text-[20px]">check</span> Añadido';
+                    button.classList.remove('bg-secondary');
+                    button.classList.add('bg-green-600');
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalContent;
+                        button.classList.remove('bg-green-600');
+                    }, 2000);
+                }, 800);
+            });
+        });
+
+        // Filter toggling logic
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                if(this.checked) {
+                    label.classList.add('text-primary', 'font-bold');
+                    label.classList.remove('text-on-surface-variant');
+                } else {
+                    label.classList.remove('text-primary', 'font-bold');
+                    label.classList.add('text-on-surface-variant');
+                }
+            });
+        });
+    </script>
+</body></html>

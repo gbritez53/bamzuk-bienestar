@@ -36,7 +36,7 @@ vi.mock('next/link', () => ({
 describe('Footer', () => {
   it('shows the current year', () => {
     render(<Footer />)
-    // Year is inside © 2026 Bamzuk Mascotas — use a function matcher
+    // Year is inside © 2026 Bamzuk Bienestar — use a function matcher
     expect(
       screen.getByText((content) => content.includes(new Date().getFullYear().toString())),
     ).toBeInTheDocument()
@@ -44,7 +44,7 @@ describe('Footer', () => {
 
   it('shows the logo with the site name as alt text', () => {
     render(<Footer />)
-    const logo = screen.getByAltText('Bamzuk Mascotas')
+    const logo = screen.getByAltText('Bamzuk Bienestar')
     expect(logo).toBeInTheDocument()
     expect(logo).toHaveAttribute('src', '/logo-footer.png')
   })

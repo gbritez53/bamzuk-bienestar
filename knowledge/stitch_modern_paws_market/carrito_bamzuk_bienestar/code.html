@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Carrito de Compras | Bamzuk Bienestar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#d1e6cb",
+                    "surface-variant": "#dee4da",
+                    "primary-fixed": "#a1f87f",
+                    "on-secondary-fixed": "#0f1f0f",
+                    "surface-container-low": "#f0f5eb",
+                    "surface-tint": "#1d6d00",
+                    "secondary-fixed-dim": "#b8ccb3",
+                    "inverse-surface": "#2c322b",
+                    "background": "#f5fbf0",
+                    "on-tertiary-container": "#383c39",
+                    "surface-container-highest": "#dee4da",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#86db66",
+                    "surface-container-high": "#e4eadf",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#c4c7c3",
+                    "surface-container": "#eaf0e5",
+                    "inverse-on-surface": "#edf3e8",
+                    "surface-bright": "#f5fbf0",
+                    "tertiary-fixed": "#e0e3df",
+                    "on-surface": "#171d17",
+                    "on-error": "#ffffff",
+                    "surface": "#f5fbf0",
+                    "primary": "#1d6d00",
+                    "on-secondary-container": "#556852",
+                    "secondary": "#51634e",
+                    "inverse-primary": "#86db66",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#a3a7a3",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d6dcd2",
+                    "outline-variant": "#c0cab6",
+                    "tertiary": "#5b5f5c",
+                    "on-primary-fixed": "#042100",
+                    "primary-container": "#66b949",
+                    "on-surface-variant": "#40493b",
+                    "on-tertiary-fixed-variant": "#444844",
+                    "on-primary-fixed-variant": "#145200",
+                    "secondary-fixed": "#d3e8ce",
+                    "on-secondary-fixed-variant": "#394b38",
+                    "on-background": "#171d17",
+                    "on-tertiary-fixed": "#191c1a",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#0f4600",
+                    "outline": "#707a69",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "lg": "48px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "sm": "12px",
+                    "md": "24px",
+                    "xl": "80px",
+                    "margin-mobile": "16px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "label-caps": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "button": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "button": ["16px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f5fbf0; color: #171d17; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .cart-item-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(29, 109, 0, 0.04); }
+        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="bg-background">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 bg-background z-50 transition-all duration-300">
+<nav class="flex justify-between items-center max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-md">
+<div class="font-headline-md text-headline-md text-primary tracking-tight font-extrabold">Bamzuk Bienestar</div>
+<div class="hidden md:flex gap-gutter items-center">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Cremas</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Suplementos</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Cuidado Personal</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Sobre Nosotros</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary scale-110 relative active:scale-95 transition-transform" data-icon="shopping_cart">
+                    shopping_cart
+                    <span class="absolute -top-2 -right-2 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-lg md:py-xl min-h-screen">
+<!-- Free Shipping Header -->
+<div class="mb-lg p-md bg-secondary-container/30 border border-secondary/20 rounded-xl flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                ¡Faltan solo <span class="font-bold text-primary">12,00€</span> para conseguir <strong>Envío Gratuito</strong>!
+            </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Cart Items -->
+<div class="lg:col-span-8 space-y-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-md">Tu Carrito</h1>
+<!-- Product 1 -->
+<div class="group cart-item-hover transition-all bg-white rounded-xl p-md flex items-center gap-md border border-outline-variant/10">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up of a minimalist, high-end emerald green glass jar of facial moisturizer on a clean white surface with soft organic shadows. The jar features a minimalist apothecary label with clinical typography. Atmospheric, serene lighting emphasizes a luxury wellness aesthetic in light mode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3swIyh8--wIDYjcW87cScOfqRDd0ymY4Q681buv0XFr1NjuL2lEnhOLj0Z4mUunN2w2QO7iyEZt_JJsOCHu_tNkKTU254ExlztRNJpLjU0jpNr4n3LxP3xvbxnznUKdpJVz4xRQ5KGwh-2C7FWdQwHBAB9powa9_-Q9MQjds8Zggzb3tIlwFKFtoAssWjIoKCJZd3xMxP66KZ_DXdfUla5ZYYT4tvUvMpOBPctU6T9ZPIFUOBGdk"/>
+</div>
+<div class="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Crema Facial Regeneradora</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">50ml • Orgánico &amp; Vegano</p>
+<button class="mt-sm text-error font-label-caps uppercase tracking-wider hover:underline flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+                                Eliminar
+                            </button>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center border border-outline-variant rounded-full px-sm py-xs bg-surface-container-lowest">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="w-8 text-center font-bold font-body-md">1</span>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<span class="font-headline-md text-headline-md text-primary">28,00€</span>
+</div>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="group cart-item-hover transition-all bg-white rounded-xl p-md flex items-center gap-md border border-outline-variant/10">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Elegant tall amber glass bottle with a minimalist pipette dropper containing golden botanical oil. The background is a soft, warm off-white with delicate leaf shadows. The product design is clean, clinical, and high-end apothecary style. Studio lighting creating a tranquil, premium health and wellness atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACpqxIiTofYrwPB6uayuCnMO9wW08EmbK73xXyNtvAxAHow-OjeyrnFjfhSozE7OuOe1j-KYldqPMLRagc_K5l0D31EoUc1vw-EveS-dUGTrJN5jaGmk9mCTkQB3SQXGdC3xuqGXg2TrwJ_GHpvuYG_5RLJ-OSi4Oe28QGYd8oY0BpQXcBDGPLHbV-f6xEpVZ3EBEqDq-mKlM4ahlqrtLsPto_gDdwzc5dklIHpk1-QLicfjC5ZRo"/>
+</div>
+<div class="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Aceite de Noche Calma</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">30ml • Esencia de Lavanda</p>
+<button class="mt-sm text-error font-label-caps uppercase tracking-wider hover:underline flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+                                Eliminar
+                            </button>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center border border-outline-variant rounded-full px-sm py-xs bg-surface-container-lowest">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="w-8 text-center font-bold font-body-md">1</span>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<span class="font-headline-md text-headline-md text-primary">10,00€</span>
+</div>
+</div>
+</div>
+<a class="inline-flex items-center gap-xs font-button text-button text-primary hover:translate-x-[-4px] transition-transform py-md" href="#">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                    Seguir Comprando
+                </a>
+</div>
+<!-- Summary Card -->
+<div class="lg:col-span-4">
+<div class="bg-surface-container-high rounded-xl p-md md:p-lg sticky top-[120px] shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-lg">Resumen del Pedido</h2>
+<div class="space-y-md mb-lg">
+<div class="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
+<span>Subtotal</span>
+<span>38,00€</span>
+</div>
+<div class="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
+<span>Envío Estándar</span>
+<span>5,95€</span>
+</div>
+<div class="pt-md border-t border-outline-variant flex justify-between items-center font-headline-md text-headline-md text-on-surface">
+<span>Total</span>
+<span class="text-primary">43,95€</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-button text-button py-md rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-md">
+                        Finalizar Compra
+                    </button>
+<div class="flex items-center justify-center gap-sm mt-md grayscale opacity-60">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="lock">lock</span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant">Pago 100% Seguro</span>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant/30">
+<p class="font-body-sm text-body-sm text-on-surface-variant italic text-center">
+                            "En Bamzuk, cada fórmula es un paso hacia tu equilibrio natural."
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-low mt-xl">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+<div class="space-y-md">
+<div class="font-headline-md text-headline-md text-primary font-extrabold">Bamzuk Bienestar</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Inspirados en la botánica, perfeccionados por la ciencia. Tu refugio diario de bienestar natural.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary mb-xs">Explora</h4>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Información de Envío</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Política de Privacidad</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Suscripción al Newsletter</a>
+</div>
+<div class="space-y-md">
+<h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary mb-xs">Únete a nosotros</h4>
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all" data-icon="favorite">favorite</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all" data-icon="star">star</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all" data-icon="share">share</span>
+</div>
+<p class="text-[10px] font-label-caps text-on-surface-variant opacity-70">© 2024 Bamzuk Bienestar. Todos los derechos reservados.</p>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions for quantity adjustment
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.95)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simple scroll effect for Header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md', 'bg-white/90', 'backdrop-blur-md');
+            } else {
+                header.classList.remove('shadow-md', 'bg-white/90', 'backdrop-blur-md');
+            }
+        });
+    </script>
+</body></html>

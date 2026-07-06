@@ -1,23 +1,49 @@
 {
   "home": {
-    "badge": "Novedades",
-    "title": "Todo para tu Mejor Amigo Peludo.",
-    "subtitle": "Descubrí suministros premium seleccionados, juguetes y snacks saludables diseñados para el estilo de vida enérgico de tus miembros favoritos de la familia.",
+    "badge": "Bienestar Natural",
+    "title": "Tu Ritual de Bienestar y Belleza Empieza Acá.",
+    "subtitle": "Descubrí una selección premium de cuidado personal, belleza y bienestar natural, pensada para tu rutina diaria.",
     "cta": "Comprar Ahora",
     "ctaSecondary": "Explorar Catálogo",
-    "categoriesTitle": "Categorías Populares",
-    "categoriesSubtitle": "Explorá productos por especie de mascota",
+    "imageAlt": "Mujer disfrutando de su bienestar y energía natural",
+    "categoriesTitle": "Categorías Destacadas",
+    "categoriesSubtitle": "Soluciones especializadas para cada una de tus necesidades",
     "categoriesCta": "Ver todas las categorías",
-    "category": {
-      "dogs": "Perros",
-      "cats": "Gatos",
-      "birds": "Aves",
-      "smallPets": "Mascotas Pequeñas",
-      "collars": "Collares",
-      "health": "Salud"
+    "categoryBento": {
+      "cremas": {
+        "title": "Cremas",
+        "description": "Hidratación profunda con extractos de plantas vivas."
+      },
+      "aceites": {
+        "title": "Aceites",
+        "description": "Esencias puras prensadas en frío."
+      },
+      "suplementos": {
+        "title": "Suplementos",
+        "description": "Nutrición celular de origen vegetal."
+      },
+      "integral": {
+        "title": "Bienestar Integral",
+        "description": "Consejos mensuales de nuestros expertos en botánica y salud holística.",
+        "cta": "Descubrir más"
+      }
     },
     "featuredTitle": "Productos Destacados",
-    "featuredCta": "Ver todos"
+    "featuredCta": "Ver todos",
+    "values": {
+      "organic": {
+        "title": "100% Orgánico",
+        "description": "Ingredientes cultivados de forma sostenible sin pesticidas ni químicos sintéticos."
+      },
+      "clinical": {
+        "title": "Probado Clínicamente",
+        "description": "Fórmulas respaldadas por investigación científica para garantizar resultados reales."
+      },
+      "packaging": {
+        "title": "Eco-Packaging",
+        "description": "Envases de vidrio y cartón reciclado para minimizar nuestra huella en el planeta."
+      }
+    }
   },
   "products": {
     "title": "Todos los Esenciales",
@@ -50,7 +76,7 @@
     "weight": "Peso",
     "dimensions": "Dimensiones",
     "shippingUnavailable": "No pudimos calcular el envío para este producto.",
-    "relatedProducts": "Productos Relacionados"
+    "relatedProducts": "Completa tu Rutina"
   },
   "cart": {
     "title": "Tu Bolsa de Compras",
@@ -70,7 +96,9 @@
     "addedToCart": "Producto agregado al carrito",
     "removedFromCart": "Producto eliminado del carrito",
     "quantityUpdated": "Cantidad actualizada",
-    "cartCleared": "Carrito vaciado"
+    "cartCleared": "Carrito vaciado",
+    "freeShippingRemaining": "¡Te faltan {amount} para el Envío Gratis!",
+    "freeShippingAchieved": "¡Envío gratis conseguido!"
   },
   "checkout": {
     "title": "Checkout",
@@ -95,9 +123,9 @@
   },
   "navigation": {
     "shopAll": "Productos",
-    "dogs": "Perros",
-    "cats": "Gatos",
-    "birds": "Aves",
+    "skincare": "Cuidado de la Piel",
+    "wellness": "Bienestar",
+    "bodycare": "Cuidado Corporal",
     "searchPlaceholder": "Buscar productos..."
   },
   "language": {
@@ -106,7 +134,7 @@
     "pt": "Português"
   },
   "footer": {
-    "tagline": "Suministros de calidad premium para los miembros más queridos de tu familia.",
+    "tagline": "Cuidado personal y bienestar natural, seleccionados con los más altos estándares de calidad.",
     "categories": "Categorías",
     "quickLinks": "Enlaces Rápidos",
     "avisoLegal": "Aviso Legal",
@@ -114,7 +142,7 @@
     "devoluciones": "Devoluciones",
     "cookies": "Política de Cookies",
     "newsletter": "Boletín",
-    "newsletterHint": "Enterate de nuestras novedades y ofertas para tu mascota.",
+    "newsletterHint": "Enterate de nuestras novedades y ofertas de bienestar y belleza.",
     "rightsReserved": "Todos los derechos reservados."
   },
   "common": {

@@ -6,7 +6,9 @@ import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { nichoConfig } from '../../../nicho.config'
 
-const CATEGORY_LINKS = ['dogs', 'cats', 'birds'] as const
+// Todos apuntan al catálogo general — Dropea no expone subcategorías reales
+// (ver design's decisión #5: category-checkbox/brand-radio nunca se construyen).
+const CATEGORY_LINKS = ['skincare', 'wellness', 'bodycare'] as const
 
 export default function Footer() {
   const t = useTranslations('footer')
@@ -22,8 +24,8 @@ export default function Footer() {
           <Image
             src="/logo-footer.png"
             alt={nichoConfig.name}
-            width={128}
-            height={56}
+            width={5075}
+            height={2128}
             className="h-16 w-auto"
           />
           <p className="max-w-xs text-sm text-muted-foreground">{t('tagline')}</p>

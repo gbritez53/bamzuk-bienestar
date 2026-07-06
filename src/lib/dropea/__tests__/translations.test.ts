@@ -128,8 +128,8 @@ describe('translateProduct — variantes', () => {
   it('sin traducción de variantes, conserva nombres originales', async () => {
     const { translateProduct } = await import('../translations')
     const result = translateProduct(baseProduct, 'pt')
-    expect(result.variants[0].name).toBe('Pequeño')
-    expect(result.variants[1].name).toBe('Grande')
+    expect(result.variants[0]?.name).toBe('Pequeño')
+    expect(result.variants[1]?.name).toBe('Grande')
   })
 })
 

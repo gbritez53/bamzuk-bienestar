@@ -42,7 +42,7 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
   }
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg bg-card shadow-[var(--shadow-sm)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl bg-card shadow-[var(--shadow-sm)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]">
       <Link href={`/${locale}/productos/${product.id}`} className="flex flex-1 cursor-pointer flex-col">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {image ? (

@@ -25,10 +25,10 @@ export default function Header() {
           {/* Logo */}
           <Link href={`/${locale}`} className="shrink-0 cursor-pointer">
             <Image
-              src="/logo-hz.png"
+              src="/logo.png"
               alt={nichoConfig.name}
-              width={5275}
-              height={762}
+              width={5075}
+              height={718}
               priority
               className="h-8 w-auto sm:h-9"
             />

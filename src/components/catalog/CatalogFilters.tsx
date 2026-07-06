@@ -9,6 +9,11 @@ import { useTranslations } from 'next-intl'
 const PRICE_MIN = 0
 const PRICE_MAX = 100
 
+// Nota: no se implementan controles de categoría (checkbox) ni marca (radio) —
+// Dropea expone una única categoría plana por producto, sin subcategorías ni
+// campo de marca. Agregar esos controles sería decorativo y engañoso (ver
+// spec catalog-filters / design §5). Deliberadamente omitidos, no removidos.
+
 interface CatalogFiltersProps {
   locale: string
 }
@@ -62,7 +67,7 @@ export default function CatalogFilters({ locale }: CatalogFiltersProps) {
       <div className="space-y-8">
         {/* Búsqueda por texto */}
         <div>
-          <h3 className="mb-4 font-heading text-base font-bold text-foreground">
+          <h3 className="mb-4 text-xs font-bold tracking-wider text-secondary uppercase">
             {t('search')}
           </h3>
           <input
@@ -85,7 +90,7 @@ export default function CatalogFilters({ locale }: CatalogFiltersProps) {
 
         {/* Rango de precio — slider dual */}
         <div>
-          <h3 className="mb-4 font-heading text-base font-bold text-foreground">{t('price')}</h3>
+          <h3 className="mb-4 text-xs font-bold tracking-wider text-secondary uppercase">{t('price')}</h3>
           <div className="relative h-6">
             {/* Track de fondo */}
             <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-secondary-light" />

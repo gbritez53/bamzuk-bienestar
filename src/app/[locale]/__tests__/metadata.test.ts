@@ -13,7 +13,7 @@ describe('generateMetadata — home page', () => {
   it('incluye title con nombre del nicho', async () => {
     const { generateMetadata } = await import('../page')
     const meta = await generateMetadata({ params: Promise.resolve({ locale: 'es' }) })
-    expect(String(meta.title)).toContain('Bamzuk Mascotas')
+    expect(String(meta.title)).toContain('Bamzuk Bienestar')
   })
 
   it('incluye alternates hreflang es y pt', async () => {

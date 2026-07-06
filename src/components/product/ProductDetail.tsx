@@ -5,8 +5,9 @@ import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import AddToCartButton from '@/components/catalog/AddToCartButton'
 import { Separator } from '@/components/ui/separator'
+import { Accordion, type AccordionItemData } from '@/components/ui/accordion'
+import RelatedProducts from '@/components/product/RelatedProducts'
 import { calcularPesoEfectivo, calcularEnvio } from '@/lib/shipping'
-import Link from 'next/link'
 import type { Product } from '@/lib/dropea/types'
 
 interface ProductDetailProps {
@@ -47,12 +48,78 @@ export default function ProductDetail({ product, locale, relatedProducts = [] }:
     return { es: { cost: es.costEur, label: es.label }, pt: { cost: pt.costEur, label: pt.label } }
   }, [product])
 
+  // Acordeón de info — reorganiza contenido REAL ya existente (Descripción /
+  // Especificaciones / Envíos). No se inventan secciones "Beneficios" /
+  // "Ingredientes" / "Modo de Uso": Dropea no expone esos campos (ver
+  // design.md §4c, "DATA REALITY").
+  const accordionItems: AccordionItemData[] = []
+  if (product.description) {
+    accordionItems.push({
+      id: 'description',
+      title: t('tabDescription'),
+      content: (
+        <div
+          className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
+          dangerouslySetInnerHTML={{ __html: product.description }}
+        />
+      ),
+    })
+  }
+  accordionItems.push({
+    id: 'specs',
+    title: t('tabSpecs'),
+    content: (
+      <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+        <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
+          <dt className="text-muted-foreground">SKU</dt>
+          <dd className="font-semibold text-foreground">{product.sku}</dd>
+        </div>
+        {product.weightKg > 0 && (
+          <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
+            <dt className="text-muted-foreground">{t('weight')}</dt>
+            <dd className="font-semibold text-foreground">{product.weightKg} kg</dd>
+          </div>
+        )}
+        {product.dimensions.length > 0 && product.dimensions.width > 0 && product.dimensions.height > 0 && (
+          <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0 sm:col-span-2">
+            <dt className="text-muted-foreground">{t('dimensions')}</dt>
+            <dd className="font-semibold text-foreground">
+              {product.dimensions.length} × {product.dimensions.width} × {product.dimensions.height} cm
+            </dd>
+          </div>
+        )}
+      </dl>
+    ),
+  })
+  accordionItems.push({
+    id: 'shipping',
+    title: t('tabShipping'),
+    content: shippingRates ? (
+      <div className="space-y-2 text-sm">
+        <div className="flex items-center justify-between border-b border-border pb-2">
+          <span className="text-muted-foreground">🇪🇸 {locale === 'pt' ? 'Espanha' : 'España'}</span>
+          <span className="font-semibold text-foreground">
+            {fmt(shippingRates.es.cost)} <span className="text-muted-foreground">({shippingRates.es.label})</span>
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">🇵🇹 Portugal</span>
+          <span className="font-semibold text-foreground">
+            {fmt(shippingRates.pt.cost)} <span className="text-muted-foreground">({shippingRates.pt.label})</span>
+          </span>
+        </div>
+      </div>
+    ) : (
+      <p className="text-sm text-muted-foreground">{t('shippingUnavailable')}</p>
+    ),
+  })
+
   return (
     <div>
       <div className="grid gap-10 lg:grid-cols-12">
         {/* Gallery */}
         <div className="lg:col-span-7">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-card shadow-[var(--shadow-md)]">
+          <div className="relative aspect-square overflow-hidden rounded-xl bg-card shadow-[var(--shadow-md)]">
             {image ? (
               <Image
                 src={image.url}
@@ -123,69 +190,10 @@ export default function ProductDetail({ product, locale, relatedProducts = [] }:
             <span className="text-sm text-muted-foreground line-through">{costPrice}</span>
           </div>
 
-          {product.description && (
-            <div
-              className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
-              dangerouslySetInnerHTML={{ __html: product.description.slice(0, 220) }}
-            />
-          )}
-
-          {/* Especificaciones */}
-          <div className="rounded-lg bg-muted p-4">
-            <h3 className="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              {t('tabSpecs')}
-            </h3>
-            <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-              <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
-                <dt className="text-muted-foreground">SKU</dt>
-                <dd className="font-semibold text-foreground">{product.sku}</dd>
-              </div>
-              {product.weightKg > 0 && (
-                <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0">
-                  <dt className="text-muted-foreground">{t('weight')}</dt>
-                  <dd className="font-semibold text-foreground">{product.weightKg} kg</dd>
-                </div>
-              )}
-              {product.dimensions.length > 0 && product.dimensions.width > 0 && product.dimensions.height > 0 && (
-                <div className="flex justify-between border-b border-border pb-1.5 sm:block sm:border-0 sm:pb-0 sm:col-span-2">
-                  <dt className="text-muted-foreground">{t('dimensions')}</dt>
-                  <dd className="font-semibold text-foreground">
-                    {product.dimensions.length} × {product.dimensions.width} × {product.dimensions.height} cm
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </div>
-
-          {/* Costos de envío */}
-          <div className="rounded-lg bg-muted p-4">
-            <h3 className="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              {t('tabShipping')}
-            </h3>
-            {shippingRates ? (
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between border-b border-border pb-2">
-                  <span className="text-muted-foreground">🇪🇸 {locale === 'pt' ? 'Espanha' : 'España'}</span>
-                  <span className="font-semibold text-foreground">
-                    {fmt(shippingRates.es.cost)} <span className="text-muted-foreground">({shippingRates.es.label})</span>
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">🇵🇹 Portugal</span>
-                  <span className="font-semibold text-foreground">
-                    {fmt(shippingRates.pt.cost)} <span className="text-muted-foreground">({shippingRates.pt.label})</span>
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">{t('shippingUnavailable')}</p>
-            )}
-          </div>
-
           {/* Variantes reales — Dropea no distingue color/talla, solo variantes con nombre */}
           {product.variants.length > 0 && (
             <div>
-              <p className="mb-2.5 text-sm font-semibold text-foreground">{t('variants')}</p>
+              <p className="mb-2.5 text-xs font-bold tracking-wider text-secondary uppercase">{t('variants')}</p>
               <div className="flex flex-wrap gap-2">
                 {product.variants.map(v => {
                   const isSelected = selectedVariantId === v.id
@@ -194,9 +202,9 @@ export default function ProductDetail({ product, locale, relatedProducts = [] }:
                       key={v.id}
                       type="button"
                       onClick={() => setSelectedVariantId(isSelected ? null : v.id)}
-                      className={`cursor-pointer rounded-lg border-2 px-3.5 py-1.5 text-sm font-semibold transition-all ${
+                      className={`cursor-pointer rounded-xl border-2 px-3.5 py-1.5 text-sm font-semibold transition-all ${
                         isSelected
-                          ? 'border-primary bg-primary-light text-primary'
+                          ? 'border-primary bg-primary-light/40 text-primary'
                           : 'border-border bg-card text-foreground hover:border-primary/50'
                       }`}
                     >
@@ -211,65 +219,14 @@ export default function ProductDetail({ product, locale, relatedProducts = [] }:
           <div className="flex flex-col gap-3 pt-1">
             <AddToCartButton product={product} variantId={selectedVariantId ?? undefined} />
           </div>
+
+          {/* Acordeón: Descripción / Especificaciones / Envíos — datos reales
+              reorganizados, primera sección abierta por defecto */}
+          <Accordion items={accordionItems} />
         </div>
-
-        {/* Descripción completa */}
-        {product.description && (
-          <div className="lg:col-span-7">
-            <h2 className="mb-6 font-heading text-xl font-extrabold text-foreground">
-              {t('tabDescription')}
-            </h2>
-            <div
-              className="prose prose-sm text-muted-foreground prose-headings:text-foreground prose-headings:font-semibold prose-a:text-primary prose-strong:text-foreground [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
-              dangerouslySetInnerHTML={{ __html: product.description }}
-            />
-          </div>
-        )}
-
-        {/* Productos relacionados — al lado de la descripción en desktop */}
-        {relatedProducts.length > 0 && (
-          <div className="lg:col-span-5">
-            <h3 className="mb-5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              {t('relatedProducts')}
-            </h3>
-            <div className="flex flex-col gap-4">
-              {relatedProducts.map(rp => (
-                <Link
-                  key={rp.id}
-                  href={`/${locale}/productos/${rp.id}`}
-                  className="group flex items-start gap-4 rounded-lg bg-card p-3 shadow-[var(--shadow-sm)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
-                >
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
-                    {rp.images[0] ? (
-                      <Image
-                        src={rp.images[0].url}
-                        alt={rp.images[0].alt || rp.name}
-                        fill
-                        sizes="80px"
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="h-6 w-6 text-muted-foreground/30">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.41a2.25 2.25 0 0 1 3.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p className="line-clamp-2 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                      {rp.name}
-                    </p>
-                    <p className="text-xs font-bold text-primary">
-                      {rp.pvpr.toLocaleString(locale === 'pt' ? 'pt-PT' : 'es-ES', { style: 'currency', currency: 'EUR' })}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+
+      <RelatedProducts products={relatedProducts} locale={locale} title={t('relatedProducts')} />
 
       <Separator className="mt-16" />
     </div>

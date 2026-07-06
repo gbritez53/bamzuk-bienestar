@@ -22,7 +22,7 @@ export default function CartItem({ item, locale }: CartItemProps) {
   )
 
   return (
-    <div className="flex gap-4 rounded-lg bg-card p-3 shadow-[var(--shadow-sm)]">
+    <div className="flex gap-4 rounded-xl bg-card p-3 shadow-[var(--shadow-sm)]">
       {item.imageUrl ? (
         <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
           <Image
