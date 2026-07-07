@@ -1,9 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import LanguageSwitcher from '../LanguageSwitcher'
 
 const mockUsePathname = vi.fn()
 const mockUseSearchParams = vi.fn()
+const mockPush = vi.fn()
 
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
@@ -12,62 +14,66 @@ vi.mock('next-intl', () => ({
 vi.mock('next/navigation', () => ({
   usePathname: () => mockUsePathname(),
   useSearchParams: () => mockUseSearchParams(),
+  useRouter: () => ({ push: mockPush }),
 }))
 
-vi.mock('next/link', () => ({
-  default: ({
-    href,
-    children,
-    className,
-    'aria-label': ariaLabel,
-    'aria-current': ariaCurrent,
-  }: {
-    href: string
-    children: React.ReactNode
-    className?: string
-    'aria-label'?: string
-    'aria-current'?: 'true' | false
-  }) => (
-    <a href={href} className={className} aria-label={ariaLabel} aria-current={ariaCurrent}>
-      {children}
-    </a>
+vi.mock('next/image', () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />
   ),
 }))
 
 describe('LanguageSwitcher', () => {
-  it('renderiza un link para cada locale (es y pt)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
     mockUsePathname.mockReturnValue('/es/productos')
     mockUseSearchParams.mockReturnValue(new URLSearchParams())
-    render(<LanguageSwitcher />)
-    expect(screen.getByRole('link', { name: /^es$/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /^pt$/i })).toBeInTheDocument()
   })
 
-  it('marca el locale actual con aria-current', () => {
-    mockUsePathname.mockReturnValue('/es/productos')
-    mockUseSearchParams.mockReturnValue(new URLSearchParams())
+  it('muestra un botón trigger con la bandera del idioma actual', () => {
     render(<LanguageSwitcher />)
-    expect(screen.getByRole('link', { name: /^es$/i })).toHaveAttribute('aria-current', 'true')
-    expect(screen.getByRole('link', { name: /^pt$/i })).not.toHaveAttribute('aria-current')
+    const trigger = screen.getByRole('button', { name: /selectorLabel: es/i })
+    expect(trigger).toBeInTheDocument()
   })
 
-  it('el link a pt reemplaza el segmento de locale preservando el resto del path', () => {
+  it('el dropdown está cerrado por defecto', () => {
+    render(<LanguageSwitcher />)
+    expect(screen.queryByRole('listbox')).not.toHaveClass('opacity-100')
+  })
+
+  it('abre el dropdown y muestra una opción por locale (es y pt)', async () => {
+    const user = userEvent.setup()
+    render(<LanguageSwitcher />)
+    await user.click(screen.getByRole('button', { name: /selectorLabel/i }))
+    expect(screen.getByRole('option', { name: /^es$/i })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: /^pt$/i })).toBeInTheDocument()
+  })
+
+  it('marca el locale actual con aria-selected', async () => {
+    const user = userEvent.setup()
+    render(<LanguageSwitcher />)
+    await user.click(screen.getByRole('button', { name: /selectorLabel/i }))
+    expect(screen.getByRole('option', { name: /^es$/i })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('option', { name: /^pt$/i })).toHaveAttribute('aria-selected', 'false')
+  })
+
+  it('navega preservando el resto del path y los query params al elegir pt', async () => {
     mockUsePathname.mockReturnValue('/es/productos/5227')
-    mockUseSearchParams.mockReturnValue(new URLSearchParams())
+    mockUseSearchParams.mockReturnValue(new URLSearchParams('page=2'))
+    const user = userEvent.setup()
     render(<LanguageSwitcher />)
-    expect(screen.getByRole('link', { name: /^pt$/i })).toHaveAttribute(
-      'href',
-      '/pt/productos/5227',
-    )
+    await user.click(screen.getByRole('button', { name: /selectorLabel/i }))
+    await user.click(screen.getByRole('button', { name: /^pt$/i }))
+    expect(mockPush).toHaveBeenCalledWith('/pt/productos/5227?page=2')
   })
 
-  it('preserva los query params al cambiar de idioma', () => {
-    mockUsePathname.mockReturnValue('/es/productos')
-    mockUseSearchParams.mockReturnValue(new URLSearchParams('page=2'))
+  it('cierra el dropdown con Escape', async () => {
+    const user = userEvent.setup()
     render(<LanguageSwitcher />)
-    expect(screen.getByRole('link', { name: /^pt$/i })).toHaveAttribute(
-      'href',
-      '/pt/productos?page=2',
-    )
+    await user.click(screen.getByRole('button', { name: /selectorLabel/i }))
+    expect(screen.getByRole('listbox')).toHaveClass('opacity-100')
+    await user.keyboard('{Escape}')
+    expect(screen.getByRole('listbox')).toHaveClass('opacity-0')
   })
 })
