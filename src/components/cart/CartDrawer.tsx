@@ -118,13 +118,22 @@ export default function CartDrawer({ open, onClose, locale }: CartDrawerProps) {
               <span className="text-sm font-semibold text-foreground">{t('total')}</span>
               <span className="font-heading text-lg font-bold text-primary">{fmt(subtotalEur)}</span>
             </div>
-            <Link
-              href={`/${locale}/checkout`}
-              onClick={onClose}
-              className="flex w-full cursor-pointer items-center justify-center rounded-xl bg-primary-light px-6 py-3 text-sm font-bold text-primary shadow-[var(--shadow-md)] transition-all hover:bg-primary hover:text-primary-foreground"
-            >
-              {t('checkout')}
-            </Link>
+            <div className="flex flex-col gap-2">
+              <Link
+                href={`/${locale}/carrito`}
+                onClick={onClose}
+                className="flex w-full cursor-pointer items-center justify-center rounded-xl border border-primary px-6 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary-light"
+              >
+                {t('viewCart')}
+              </Link>
+              <Link
+                href={`/${locale}/checkout`}
+                onClick={onClose}
+                className="flex w-full cursor-pointer items-center justify-center rounded-xl bg-primary-light px-6 py-3 text-sm font-bold text-primary shadow-[var(--shadow-md)] transition-all hover:bg-primary hover:text-primary-foreground"
+              >
+                {t('checkout')}
+              </Link>
+            </div>
           </div>
         )}
       </div>
