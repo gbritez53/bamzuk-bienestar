@@ -17,11 +17,36 @@ export default function Header() {
   const params = useParams()
   const locale = (params.locale as string) || 'es'
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-[var(--header-bg)] shadow-[var(--shadow-md)] backdrop-blur-lg">
-        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-6 sm:px-6 lg:px-8">
+          {/* Hamburger (mobile only) */}
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label="Abrir menú"
+            aria-expanded={menuOpen}
+            className="cursor-pointer text-primary md:hidden"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="h-6 w-6"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"
+              />
+            </svg>
+          </button>
+
           {/* Logo */}
           <Link href={`/${locale}`} className="shrink-0 cursor-pointer">
             <Image
@@ -30,7 +55,7 @@ export default function Header() {
               width={5075}
               height={718}
               priority
-              className="h-8 w-auto sm:h-9"
+              className="h-7 w-auto sm:h-9"
             />
           </Link>
 
@@ -69,7 +94,7 @@ export default function Header() {
           </div>
 
           {/* Icons */}
-          <div className="flex shrink-0 items-center gap-4">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             <LanguageSwitcher />
             <button
               onClick={() => setDrawerOpen(true)}
@@ -95,6 +120,18 @@ export default function Header() {
             </button>
           </div>
         </nav>
+
+        {menuOpen && (
+          <div className="border-t border-border bg-[var(--header-bg)] px-4 py-3 md:hidden">
+            <Link
+              href={`/${locale}/productos`}
+              onClick={() => setMenuOpen(false)}
+              className="block cursor-pointer py-2 text-sm font-bold text-primary"
+            >
+              {t('shopAll')}
+            </Link>
+          </div>
+        )}
       </header>
 
       <CartDrawer

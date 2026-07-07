@@ -12,22 +12,30 @@ interface HomeHeroProps {
  * `sips -g all`) y ya trae su propia tarjeta redondeada anclada a la derecha
  * del canvas, por eso `object-contain` + `object-right` alcanza sin recortar
  * ni necesitar processing adicional.
+ *
+ * En mobile Y tablet el fondo absoluto se superponía al texto (el texto
+ * necesita ~576px de max-w-xl y no hay lugar para la foto al lado hasta
+ * bien entrado el ancho de escritorio), así que la imagen es un bloque
+ * normal arriba del texto (`order-first`, altura fija) hasta `lg:`
+ * (1024px) — recién ahí se vuelve overlay absoluto a la derecha.
  */
 export default function HomeHero({ locale, t }: HomeHeroProps) {
   const catalogHref = `/${locale}/productos`
 
   return (
-    <section className="relative flex min-h-[420px] flex-col justify-center overflow-hidden rounded-2xl bg-secondary-light/40 shadow-[var(--shadow-md)] md:min-h-[500px]">
+    <section className="relative flex min-h-[420px] flex-col overflow-hidden rounded-2xl bg-secondary-light/40 shadow-[var(--shadow-md)] lg:justify-center md:min-h-[500px]">
       <div className="hero-gradient absolute inset-0" aria-hidden="true" />
-      <Image
-        src="/banner_bienestar.png"
-        alt={t('imageAlt')}
-        fill
-        priority
-        sizes="100vw"
-        className="object-contain object-right"
-      />
-      <div className="relative z-10 max-w-xl space-y-5 p-8 sm:p-12">
+      <div className="relative order-first h-48 w-full shrink-0 sm:h-64 lg:absolute lg:inset-0 lg:order-none lg:h-auto">
+        <Image
+          src="/banner_bienestar.png"
+          alt={t('imageAlt')}
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-contain object-right"
+        />
+      </div>
+      <div className="relative z-10 max-w-xl space-y-5 p-6 sm:p-8 md:p-12">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-light px-4 py-1.5 text-xs font-bold tracking-wide text-primary uppercase">
           {t('badge')}
         </span>

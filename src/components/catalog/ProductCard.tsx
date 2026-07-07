@@ -83,7 +83,7 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
           </h2>
         </div>
       </Link>
-      <div className="flex items-center justify-between gap-2 p-4 pt-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 p-4 pt-0">
         <span className="font-heading text-lg font-extrabold text-primary">{price}</span>
         <button
           onClick={handleAddToCart}

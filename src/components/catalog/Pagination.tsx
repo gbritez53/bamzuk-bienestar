@@ -29,7 +29,8 @@ export default function Pagination({
         {t('showing', { start: startItem, end: endItem, total })}
       </p>
 
-      <div className="flex items-center gap-1.5">
+      <div className="w-full overflow-x-auto">
+      <div className="mx-auto flex w-fit items-center gap-1.5">
         {/* Previous */}
         {currentPage > 1 ? (
           <Link
@@ -125,6 +126,7 @@ export default function Pagination({
             </svg>
           </span>
         )}
+      </div>
       </div>
     </nav>
   )

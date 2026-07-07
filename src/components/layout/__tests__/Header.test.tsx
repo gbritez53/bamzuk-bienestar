@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Header from '@/components/layout/Header'
 import { useCartStore } from '@/hooks/useCart'
@@ -18,6 +19,7 @@ vi.mock('next/navigation', () => ({
   useParams: () => ({ locale: 'es' }),
   usePathname: () => '/es',
   useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({ push: vi.fn() }),
 }))
 
 vi.mock('next/link', () => ({
@@ -78,5 +80,19 @@ describe('Header', () => {
     render(<Header />)
     const cartButton = screen.getByRole('button', { name: /abrir carrito/i })
     expect(cartButton).toHaveTextContent('5')
+  })
+
+  it('does not show the mobile products link until the hamburger menu is opened', () => {
+    render(<Header />)
+    expect(screen.getAllByRole('link', { name: /shopAll/i })).toHaveLength(1)
+  })
+
+  it('reveals a second products link inside the mobile menu when the hamburger is clicked', async () => {
+    const user = userEvent.setup()
+    render(<Header />)
+    await user.click(screen.getByRole('button', { name: /abrir menú/i }))
+    const links = screen.getAllByRole('link', { name: /shopAll/i })
+    expect(links).toHaveLength(2)
+    expect(links[1]).toHaveAttribute('href', '/es/productos')
   })
 })
