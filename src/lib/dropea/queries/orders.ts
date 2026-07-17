@@ -36,6 +36,9 @@ export const GET_ORDER_BY_ID_QUERY = gql`
         tracking_code
         tracking_url
         carrier_company
+        shop {
+          id
+        }
         customer {
           full_name
           email

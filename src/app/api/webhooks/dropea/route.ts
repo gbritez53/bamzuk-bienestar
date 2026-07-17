@@ -25,7 +25,16 @@ async function maybeSendTrackingEmail(orderId: number): Promise<void> {
   if (await idempotencyStore.isProcessed(dedupeKey)) return
 
   const order = await getOrderTracking(orderId)
-  if (!order?.trackingCode || !order.trackingUrl || !order.customerEmail) return
+  if (!order) return
+
+  // Las 3 tiendas Bamzuk comparten la MISMA cuenta de Dropea — callbackCreate
+  // no tiene parámetro de shop, así que este webhook recibe eventos de las
+  // 3. Si el pedido no es de ESTA tienda, ignorarlo (si no, cada tienda le
+  // manda el mail al cliente de las otras dos también).
+  const ownShopId = process.env.DROPEA_SHOP_ID
+  if (ownShopId && order.shopId !== ownShopId) return
+
+  if (!order.trackingCode || !order.trackingUrl || !order.customerEmail) return
 
   await sendTrackingEmail({
     to: order.customerEmail,

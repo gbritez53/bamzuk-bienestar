@@ -353,10 +353,11 @@ describe('mapDropeaOrderTracking', () => {
     tracking_code: '0280010280017024587071',
     tracking_url: 'https://dinapaqweb.tipsa-dinapaq.com/dinapaqweb/detalle_envio.php?servicio=xxx',
     carrier_company: '#1 - tipsa',
+    shop: { id: '17817' },
     customer: { full_name: 'Daniel Longone', email: 'daniel@test.com', zip: '49213' },
   }
 
-  it('mapea id, status, tracking y datos del cliente', () => {
+  it('mapea id, status, tracking, shop y datos del cliente', () => {
     const result = mapDropeaOrderTracking(rawOrder)
     expect(result).toEqual({
       id: '1295211',
@@ -364,10 +365,16 @@ describe('mapDropeaOrderTracking', () => {
       trackingCode: '0280010280017024587071',
       trackingUrl: 'https://dinapaqweb.tipsa-dinapaq.com/dinapaqweb/detalle_envio.php?servicio=xxx',
       carrierCompany: '#1 - tipsa',
+      shopId: '17817',
       customerEmail: 'daniel@test.com',
       customerName: 'Daniel Longone',
       customerZip: '49213',
     })
+  })
+
+  it('shop null se mapea a shopId null sin explotar', () => {
+    const result = mapDropeaOrderTracking({ ...rawOrder, shop: null })
+    expect(result.shopId).toBeNull()
   })
 
   it('customer null se mapea a campos null sin explotar', () => {

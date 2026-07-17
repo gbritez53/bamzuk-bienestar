@@ -77,6 +77,7 @@ export interface DropeaRawOrderTracking {
   tracking_code: string | null
   tracking_url: string | null
   carrier_company: string | null
+  shop: { id: string } | null
   customer: {
     full_name: string | null
     email: string | null
@@ -154,6 +155,7 @@ export interface OrderTracking {
   trackingCode: string | null
   trackingUrl: string | null
   carrierCompany: string | null
+  shopId: string | null
   customerEmail: string | null
   customerName: string | null
   customerZip: string | null

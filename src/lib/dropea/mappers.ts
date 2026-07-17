@@ -158,6 +158,7 @@ export function mapDropeaOrderTracking(raw: DropeaRawOrderTracking): OrderTracki
     trackingCode: raw.tracking_code,
     trackingUrl: raw.tracking_url,
     carrierCompany: raw.carrier_company,
+    shopId: raw.shop?.id ?? null,
     customerEmail: raw.customer?.email ?? null,
     customerName: raw.customer?.full_name ?? null,
     customerZip: raw.customer?.zip ?? null,

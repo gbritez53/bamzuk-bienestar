@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
 vi.stubEnv('DROPEA_WEBHOOK_SECRET', 'test-secret')
+vi.stubEnv('DROPEA_SHOP_ID', '17817')
 
 // Resetear el módulo de idempotency entre tests para evitar contaminación
 vi.mock('@/lib/webhooks/idempotency', () => {
@@ -25,6 +26,7 @@ const orderWithTracking = {
   trackingCode: '0280010280017024587071',
   trackingUrl: 'https://dinapaqweb.tipsa-dinapaq.com/dinapaqweb/detalle_envio.php?servicio=xxx',
   carrierCompany: '#1 - tipsa',
+  shopId: '17817',
   customerEmail: 'cliente@test.com',
   customerName: 'Juan Test',
   customerZip: '28001',
@@ -131,6 +133,39 @@ describe('POST /api/webhooks/dropea', () => {
 
     expect(res.status).toBe(200)
     expect(sendTrackingEmail).not.toHaveBeenCalled()
+  })
+
+  it('ignora el pedido si es de OTRA tienda (mismo webhook recibe eventos de las 3 tiendas Bamzuk)', async () => {
+    const { getOrderTracking } = await import('@/lib/dropea/orders')
+    const { sendTrackingEmail } = await import('@/lib/email/tracking-email')
+    vi.mocked(getOrderTracking).mockResolvedValue({ ...orderWithTracking, id: '456', shopId: '17593' }) // electronica, no bienestar
+
+    const { POST } = await import('../route')
+    const req = makeRequest(
+      { event: 'order.status_changed', event_id: 'evt-7', data: { order_id: 456, status: 'PREPARED' } },
+      'test-secret',
+    )
+    const res = await POST(req)
+
+    expect(res.status).toBe(200)
+    expect(sendTrackingEmail).not.toHaveBeenCalled()
+  })
+
+  it('si DROPEA_SHOP_ID no está configurado, no filtra (fail-open) y manda el mail igual', async () => {
+    vi.stubEnv('DROPEA_SHOP_ID', '')
+    const { getOrderTracking } = await import('@/lib/dropea/orders')
+    const { sendTrackingEmail } = await import('@/lib/email/tracking-email')
+    vi.mocked(getOrderTracking).mockResolvedValue({ ...orderWithTracking, id: '789', shopId: '17593' })
+
+    const { POST } = await import('../route')
+    const req = makeRequest(
+      { event: 'order.status_changed', event_id: 'evt-8', data: { order_id: 789, status: 'PREPARED' } },
+      'test-secret',
+    )
+    await POST(req)
+
+    expect(sendTrackingEmail).toHaveBeenCalled()
+    vi.stubEnv('DROPEA_SHOP_ID', '17817')
   })
 
   it('no rompe el webhook si el envío del mail falla', async () => {
