@@ -25,6 +25,7 @@ export interface DropeaRawProduct {
   length: number        // cm
   pvpr: number          // precio venta público recomendado (EUR)
   cost_price: number    // precio de costo para el dropshipper (EUR)
+  fulfillment_cost: number | null // fee de picking/embalaje que cobra Dropea aparte del cost_price (EUR)
   images: string[]      // array de URLs directas (no objetos)
   category: string      // nombre de categoría como string
   variants: DropeaRawVariant[]
@@ -68,6 +69,23 @@ export interface DropeaRawOrderPagination {
   current_page: number
   last_page: number
   per_page: number
+}
+
+export interface DropeaRawOrderTracking {
+  id: string
+  status: string
+  tracking_code: string | null
+  tracking_url: string | null
+  carrier_company: string | null
+  customer: {
+    full_name: string | null
+    email: string | null
+    zip: string | null
+  } | null
+}
+
+export interface DropeaRawOrderTrackingPagination {
+  data: DropeaRawOrderTracking[]
 }
 
 // ============================================================
@@ -128,4 +146,15 @@ export interface Order {
   notes: string | null
   createdAt: string
   updatedAt: string
+}
+
+export interface OrderTracking {
+  id: string
+  status: string
+  trackingCode: string | null
+  trackingUrl: string | null
+  carrierCompany: string | null
+  customerEmail: string | null
+  customerName: string | null
+  customerZip: string | null
 }

@@ -220,4 +220,71 @@ describe('createCodOrder', () => {
     expect(result.reference).toMatch(/^ORDER-/)
     expect(variables.external_order_name).toBe(result.reference)
   })
+
+  it('reenvía shippingEur a createDropeaOrder para que se sume al primer producto', async () => {
+    const { createCodOrder } = await import('../actions')
+    await createCodOrder({
+      items: [cartItem],
+      customer,
+      locale: 'es',
+      shippingEur: 3.68,
+    })
+
+    const variables = mockDropeaRequest.mock.calls[0]?.[1]
+    // cartItem: 29.99 * 2 = 59.98 (producto) + 3.68 (envío) = 63.66
+    expect(variables.products[0]).toMatchObject({ total_value: 63.66, unit_price: 31.83 })
+  })
+})
+
+// ── Fix contrareembolso: el repartidor cobra en la puerta lo declarado a
+// Dropea — sin sumar el envío ahí, el vendedor termina pagándolo de su bolsillo.
+describe('createDropeaOrder — contrareembolso suma el envío al producto', () => {
+  beforeEach(() => {
+    vi.stubEnv('DROPEA_SHOP_ID', '17593')
+    mockDropeaRequest.mockReset()
+    mockDropeaRequest.mockResolvedValue({ orderCreate: { id: 'order-1', status: 'PENDING', total_amount: 0 } })
+    __setDropeaClient(mockDropeaClient)
+  })
+
+  it('sin shippingEur, total_value es solo el precio del producto', async () => {
+    const { createDropeaOrder } = await import('../actions')
+    await createDropeaOrder({
+      items: [cartItem],
+      customer,
+      locale: 'es',
+      reference: 'COD-1',
+      paymentMethod: 'CASH_ON_DELIVERY',
+    })
+    const variables = mockDropeaRequest.mock.calls[0]?.[1]
+    expect(variables.products[0]).toMatchObject({ unit_price: 29.99, total_value: 59.98 })
+  })
+
+  it('con shippingEur en CASH_ON_DELIVERY, suma el envío al primer producto', async () => {
+    const { createDropeaOrder } = await import('../actions')
+    await createDropeaOrder({
+      items: [cartItem],
+      customer,
+      locale: 'es',
+      reference: 'COD-1',
+      paymentMethod: 'CASH_ON_DELIVERY',
+      shippingEur: 3.68,
+    })
+    const variables = mockDropeaRequest.mock.calls[0]?.[1]
+    // 59.98 (producto x2) + 3.68 (envío) = 63.66 — lo que cobra el repartidor en la puerta
+    expect(variables.products[0]).toMatchObject({ unit_price: 31.83, total_value: 63.66 })
+  })
+
+  it('con shippingEur en PAID (tarjeta), NO suma el envío — ya se cobró vía SumUp', async () => {
+    const { createDropeaOrder } = await import('../actions')
+    await createDropeaOrder({
+      items: [cartItem],
+      customer,
+      locale: 'es',
+      reference: 'ORDER-1',
+      paymentMethod: 'PAID',
+      shippingEur: 3.68,
+    })
+    const variables = mockDropeaRequest.mock.calls[0]?.[1]
+    expect(variables.products[0]).toMatchObject({ unit_price: 29.99, total_value: 59.98 })
+  })
 })

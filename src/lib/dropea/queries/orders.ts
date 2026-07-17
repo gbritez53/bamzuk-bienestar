@@ -21,3 +21,27 @@ export const LIST_ORDERS_QUERY = gql`
     }
   }
 `
+
+/**
+ * Trae una orden puntual con datos de tracking + email del cliente — usado
+ * por el webhook de Dropea para mandar el mail de seguimiento (ver
+ * src/lib/dropea/orders.ts y src/app/api/webhooks/dropea/route.ts).
+ */
+export const GET_ORDER_BY_ID_QUERY = gql`
+  query GetOrderById($id: [Int]!) {
+    orders(id: $id, limit: 1) {
+      data {
+        id
+        status
+        tracking_code
+        tracking_url
+        carrier_company
+        customer {
+          full_name
+          email
+          zip
+        }
+      }
+    }
+  }
+`

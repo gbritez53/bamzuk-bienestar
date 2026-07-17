@@ -39,12 +39,20 @@ export interface Address {
   country: 'ES' | 'PT'
 }
 
+export interface CheckoutCustomer {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  address: Address
+}
+
 export interface CheckoutPayload {
   items: CartItem[]
   shipping: ShippingCalculation
   locale: 'es' | 'pt'
   vatRate: 0.21 | 0.23
-  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
+  customer: CheckoutCustomer
   paymentMethod: 'sumup' | 'cod'
   subtotalWithVat: number
   total: number // subtotal+shipping, céntimos

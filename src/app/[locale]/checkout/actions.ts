@@ -4,7 +4,8 @@ import { randomUUID } from 'crypto'
 import { getDropeaClient } from '@/lib/dropea/client'
 import { CREATE_ORDER_MUTATION } from '@/lib/dropea/mutations/orders'
 import { checkoutStore, type CheckoutPayload } from '@/lib/webhooks/checkout-store'
-import type { CartItem, Address } from '@/lib/contracts'
+import type { CartItem, CheckoutCustomer } from '@/lib/contracts'
+import { notifyOrderPlaced, type OrderPlacedNotification } from '@/lib/email/order-notifications'
 
 const SUMUP_API = 'https://api.sumup.com'
 
@@ -34,7 +35,7 @@ function getSumupCredentials(): { apiKey: string; merchantCode: string } {
 export interface SaveCheckoutPayloadInput {
   reference: string
   items: CartItem[]
-  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
+  customer: CheckoutCustomer
   locale: string
   subtotalCents: number
   shippingEur: number
@@ -117,11 +118,18 @@ export type DropeaPaymentMethod = 'PAID' | 'CASH_ON_DELIVERY'
 
 export interface CreateOrderInput {
   items: CartItem[]
-  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
+  customer: CheckoutCustomer
   locale: string
   reference: string
   paymentMethod: DropeaPaymentMethod
   sumupCheckoutId?: string
+  // Envío a sumar al primer producto declarado a Dropea. Solo aplica a
+  // CASH_ON_DELIVERY: orderCreate no tiene un campo de envío propio, así que
+  // el repartidor cobra en la puerta la suma de los productos declarados —
+  // sin esto el envío nunca se cobra y lo termina pagando el dropshipper
+  // (detectado con un pedido de prueba real: "Coste de envío estimado"
+  // aparecía como gasto neto, no como algo cobrado al cliente).
+  shippingEur?: number
 }
 
 export async function createDropeaOrder(
@@ -137,6 +145,25 @@ export async function createDropeaOrder(
 
   const client = getDropeaClient()
 
+  const products = input.items.map(item => {
+    const unitPriceEur = item.unitBasePrice / 100
+    return {
+      product_id: parseInt(item.productId, 10),
+      unit_price: unitPriceEur,
+      quantity: item.quantity,
+      total_value: Math.round(unitPriceEur * item.quantity * 100) / 100,
+    }
+  })
+
+  // Contrareembolso: sumamos el envío al primer producto para que el monto
+  // que cobra el repartidor en la puerta coincida con lo que se le mostró
+  // al cliente en el checkout (subtotal + envío).
+  if (input.paymentMethod === 'CASH_ON_DELIVERY' && input.shippingEur && products[0]) {
+    const first = products[0]
+    first.total_value = Math.round((first.total_value + input.shippingEur) * 100) / 100
+    first.unit_price = Math.round((first.total_value / first.quantity) * 100) / 100
+  }
+
   const variables = {
     shop_id: parseInt(shopId, 10),
     payment_method: input.paymentMethod,
@@ -151,15 +178,7 @@ export async function createDropeaOrder(
       zip: input.customer.address.postalCode,
       country: input.customer.address.country,
     },
-    products: input.items.map(item => {
-      const unitPriceEur = item.unitBasePrice / 100
-      return {
-        product_id: parseInt(item.productId, 10),
-        unit_price: unitPriceEur,
-        quantity: item.quantity,
-        total_value: Math.round(unitPriceEur * item.quantity * 100) / 100,
-      }
-    }),
+    products,
   }
 
   const data = await client.request<{
@@ -179,8 +198,11 @@ export async function createDropeaOrder(
 
 export interface CreateCodOrderInput {
   items: CartItem[]
-  customer: { firstName: string; lastName: string; email: string; phone: string; address: Address }
+  customer: CheckoutCustomer
   locale: string
+  // Ver comentario en CreateOrderInput.shippingEur — mismo fix: el envío se
+  // suma al primer producto declarado para que el repartidor lo cobre.
+  shippingEur?: number
 }
 
 /**
@@ -197,6 +219,7 @@ export async function createCodOrder(
     locale: input.locale,
     reference,
     paymentMethod: 'CASH_ON_DELIVERY',
+    shippingEur: input.shippingEur,
   })
   return { orderId, reference }
 }
@@ -205,4 +228,14 @@ export async function createCodOrder(
 
 export async function generateOrderReference(): Promise<string> {
   return `ORDER-${randomUUID().slice(0, 8).toUpperCase()}`
+}
+
+// ── Notificaciones por email ─────────────────────────────────────────────
+// CheckoutForm.tsx es 'use client' y no puede importar módulos de email
+// (RESEND_API_KEY es server-only). Este server action es un pasamanos hacia
+// el orquestador puro — notifyOrderPlaced ya traga errores, así que esto es
+// solo el puente client → server.
+
+export async function notifyOrderPlacedAction(input: OrderPlacedNotification): Promise<void> {
+  await notifyOrderPlaced(input)
 }

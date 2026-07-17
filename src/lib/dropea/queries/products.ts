@@ -19,6 +19,7 @@ export const LIST_PRODUCTS_QUERY = gql`
         length
         pvpr
         cost_price
+        fulfillment_cost
         images
         category
         variants {
@@ -51,6 +52,7 @@ export const GET_PRODUCT_BY_ID_QUERY = gql`
         length
         pvpr
         cost_price
+        fulfillment_cost
         images
         category
         variants {

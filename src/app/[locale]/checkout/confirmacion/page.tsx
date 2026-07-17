@@ -1,6 +1,8 @@
 import { getTranslations } from 'next-intl/server'
 import { verifySumUpPayment, createDropeaOrder } from '../actions'
 import { checkoutStore } from '@/lib/webhooks/checkout-store'
+import { notifyOrderPlaced } from '@/lib/email/order-notifications'
+import { normalizeLocale } from '@/lib/email/shell'
 
 export default async function ConfirmacionPage({
   params,
@@ -89,6 +91,21 @@ export default async function ConfirmacionPage({
         customerName = payload.customer.firstName
         // Limpiar payload procesado
         await checkoutStore.delete(ref!)
+
+        try {
+          await notifyOrderPlaced({
+            orderId,
+            reference: ref!,
+            locale: normalizeLocale(payload.locale),
+            customer: payload.customer,
+            items: payload.items,
+            paymentMethod: 'PAID',
+            subtotalCents: payload.subtotalCents,
+            shippingEur: payload.shippingEur,
+          })
+        } catch (e) {
+          console.error('[confirmacion] notification failed:', e) // nunca tocar errorMessage
+        }
       } else {
         // El payload pudo perderse por cold start de serverless
         // La orden se creará cuando llegue el webhook de SumUp

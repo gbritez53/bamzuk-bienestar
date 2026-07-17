@@ -8,10 +8,12 @@ import {
   saveCheckoutPayload,
   generateOrderReference,
   createCodOrder,
+  notifyOrderPlacedAction,
 } from '@/app/[locale]/checkout/actions'
 import { calcularEnvio, calcularPesoEfectivo, getZoneFromCountry, DEFAULT_SHIPPING_SERVICE } from '@/lib/shipping'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { normalizeLocale } from '@/lib/email/shell'
 
 interface CheckoutFormProps {
   locale: string
@@ -71,7 +73,26 @@ export default function CheckoutForm({ locale }: CheckoutFormProps) {
             items,
             customer,
             locale,
+            shippingEur,
           })
+
+          try {
+            await notifyOrderPlacedAction({
+              orderId,
+              reference: codRef,
+              locale: normalizeLocale(locale),
+              customer,
+              items,
+              paymentMethod: 'CASH_ON_DELIVERY',
+              subtotalCents,
+              shippingEur,
+            })
+          } catch (e) {
+            // La orden ya se creó en Dropea: un fallo de notificación NUNCA
+            // debe setError (reintentar duplicaría el pedido).
+            console.error('[checkout-cod] notification failed:', e)
+          }
+
           clearCart()
           window.location.href = `/${locale}/checkout/confirmacion?cod=1&order=${encodeURIComponent(orderId)}&ref=${encodeURIComponent(codRef)}`
           return

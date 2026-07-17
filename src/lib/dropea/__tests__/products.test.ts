@@ -102,9 +102,12 @@ describe('listProducts', () => {
   })
 
   it('excluye productos con pvpr 0 (sin precio de venta cargado)', async () => {
+    // el pvpr crudo se ignora y se recalcula desde cost_price — para dejar
+    // el pvpr resultante en 0 hace falta cost_price 0 (costo real
+    // incalculable), no alcanza con setear pvpr: 0
     mockRequest.mockResolvedValue({
       products: {
-        data: [rawProduct, { ...rawProduct, id: '62', pvpr: 0 }],
+        data: [rawProduct, { ...rawProduct, id: '62', pvpr: 0, cost_price: 0 }],
         total: 2,
         current_page: 1,
         last_page: 1,
@@ -122,7 +125,7 @@ describe('listProducts', () => {
       products: {
         data: [
           { ...rawProduct, id: '1', category: 'Mascotas' },
-          { ...rawProduct, id: '2', category: 'Mascotas', pvpr: 0 },
+          { ...rawProduct, id: '2', category: 'Mascotas', pvpr: 0, cost_price: 0 },
         ],
         total: 2,
         current_page: 1,

@@ -1,17 +1,11 @@
 // Almacén temporal para payloads de checkout antes de redirigir a SumUp.
 // In-memory: resetea en cold start. Reemplazar con Redis/KV en producción.
 
-import type { CartItem, Address } from '@/lib/contracts'
+import type { CartItem, CheckoutCustomer } from '@/lib/contracts'
 
 export interface CheckoutPayload {
   items: CartItem[]
-  customer: {
-    firstName: string
-    lastName: string
-    email: string
-    phone: string
-    address: Address
-  }
+  customer: CheckoutCustomer
   locale: string
   subtotalCents: number
   shippingEur: number
